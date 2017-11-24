@@ -1,10 +1,3 @@
-/*
- * Code generated from Atmel Start.
- *
- * This file will be overwritten when reconfiguring your Atmel Start project.
- * Please copy examples or other code you want to keep to a separate file or main.c
- * to avoid loosing it when reconfiguring.
- */
 #ifndef USB_DEVICE_MAIN_H
 #define USB_DEVICE_MAIN_H
 
@@ -19,7 +12,7 @@ void cdcd_acm_example(void);
 void cdc_device_acm_init(void);
 
 /**
- * \berif Initialize USB
+ * \brief Initialize USB
  */
 void usb_init(void);
 

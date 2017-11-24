@@ -102,7 +102,7 @@ OBJS:= \
 	$(RTOS_OBJS) \
 	driver_init.o \
 	persistent_storage_start.o \
-	usb_start.o \
+	usb.o \
 	linenoise.o \
 	utility.o \
 	box_control.o \

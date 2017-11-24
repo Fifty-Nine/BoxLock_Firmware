@@ -6,7 +6,7 @@
  * to avoid loosing it when reconfiguring.
  */
 #include "atmel_start.h"
-#include "usb_start.h"
+#include "usb.h"
 
 #if CONF_USBD_HS_SP
 static uint8_t single_desc_bytes[] = {
@@ -110,12 +110,10 @@ void cdcd_acm_example(void)
 
     cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_device_cb_state_c);
 
-    while (1) {
-    }
+    while (1) { }
 }
 
 void usb_init(void)
 {
-
     cdc_device_acm_init();
 }
