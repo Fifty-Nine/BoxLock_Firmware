@@ -12,6 +12,8 @@
 
 #include "box_control.h"
 #include "box_console.h"
+#include "mtb.h"
+
 static QueueHandle_t stdoutQueue;
 static QueueHandle_t stdinQueue;
 static QueueHandle_t keypadQueue;
@@ -228,6 +230,7 @@ static bool usb_line_state_changed(usb_cdc_control_signal_t newState)
 extern "C"
 void HardFault_Handler()
 {
+    mtb::stop_trace();
 	__asm("BKPT #0");
 	gpio_set_pin_level(LED_OUT, true);
 	while(1) {}
@@ -236,6 +239,7 @@ void HardFault_Handler()
 extern "C"
 void vApplicationMallocFailedHook()
 {
+    mtb::stop_trace();
 	__asm("BKPT #0");
 	gpio_set_pin_level(LED_OUT, true);
 	while(1) {}
@@ -244,6 +248,7 @@ void vApplicationMallocFailedHook()
 extern "C"
 void vApplicationStackOverflowHook()
 {
+    mtb::stop_trace();
 	__asm("BKPT #0");
 	gpio_set_pin_level(LED_OUT, true);
 	while(1) {}
@@ -251,6 +256,7 @@ void vApplicationStackOverflowHook()
 
 int main(void)
 {
+    mtb::init(32);
     system_init();
     persistent_storage_init();
     usb_init();
