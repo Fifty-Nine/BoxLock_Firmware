@@ -1,0 +1,38 @@
+# Path to the root directory of the Atmel XDK.
+ASF_INSTALL_PATH:=
+
+# Path to the target system root directory.
+SYSROOT:=
+
+# Definitions of the various binaries used to build and
+# run the target.
+CC:=clang
+CXX:=clang++
+GDB:=arm-unknown-eabi-gdb
+
+# I found that linking with LLD caused us to overflow the available
+# text memory, even with -ffunction-sections and --gc-seconds, so
+# fall back to using g++. This also makes dealing with standard
+# libs a little easier.
+LD:=arm-unknown-eabi-g++
+
+# Add flags common to C and C++ here.
+COMMON_FLAGS+= \
+	--sysroot $(SYSROOT) \
+	-isystem $(SYSROOT)/include/c++/7.2.0/arm-unknown-eabi \
+
+# Add C-specific flags here.
+CFLAGS+= \
+	-target arm-unknown-eabi \
+
+# Add C++-specific flags here
+CXXFLAGS+= \
+	-target arm-unknown-eabi \
+	-stdlib=libstdc++ \
+
+# Add linker flags here
+LDFLAGS+= \
+	-specs=nosys.specs \
+	 -Wl,--print-memory-usage \
+
+

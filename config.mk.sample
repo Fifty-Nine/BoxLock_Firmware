@@ -1,0 +1,2 @@
+# Path to the root directory of the Atmel XDK.
+ASF_INSTALL_PATH:=

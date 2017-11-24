@@ -1,0 +1,27 @@
+# Path to the root directory of the Atmel XDK.
+ASF_INSTALL_PATH:=
+
+# Path to the target system root directory.
+SYSROOT:=
+
+# Definitions of the various binaries used to build and
+# run the target.
+CC:=arm-unknown-eabi-gcc
+CXX:=arm-unknown-eabi-g++
+LD:=arm-unknown-eabi-g++
+GDB:=arm-unknown-eabi-gdb
+
+# Add flags common to C and C++ here.
+COMMON_FLAGS+= \
+
+# Add C-specific flags here.
+CFLAGS+= \
+
+# Add C++-specific flags here
+CXXFLAGS+= \
+
+# Add linker flags here
+LDFLAGS+= \
+	-specs=nosys.specs \
+	 -Wl,--print-memory-usage \
+
