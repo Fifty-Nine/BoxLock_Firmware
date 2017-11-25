@@ -100,10 +100,10 @@ void memoryStats(const char*)
     auto info = mallinfo();
     printf(
         "Heap:\n"
-        "\t- heap size     = %#8x\n"
-        "\t- in use blocks = %#8x\n"
-        "\t- free blocks   = %#8x\n"
-        "\t- current sbrk  = %p\n",
+        "\t- heap size     = %#10x\n"
+        "\t- in use blocks = %#10x\n"
+        "\t- free blocks   = %#10x\n"
+        "\t- current sbrk  = %10p\n",
         info.arena,
         info.uordblks,
         info.fordblks,
