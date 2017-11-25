@@ -95,13 +95,9 @@ void keypadScanTask(void *ctxt)
                 previous[i][j] = false;
                 if (held) {
                     xQueueSendToBack(keypadQueue, &c, 0);
-                    printf("%c released\r\n", c);
                 }
                 } else if (pressed) {
                 previous[i][j] = true;
-                if (!held) {
-                    printf("%c pressed\r\n", c);
-                }
             }
         }
 
