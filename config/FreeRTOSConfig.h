@@ -311,6 +311,8 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 #include <reent.h>
 #define configUSE_NEWLIB_REENTRANT 1
 
+#define configSUPPORT_STATIC_ALLOCATION 1
+
 // <<< end of configuration section >>>
 
 #endif // FREERTOSCONFIG_H

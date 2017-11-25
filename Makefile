@@ -109,7 +109,7 @@ OBJS:= \
 	mtb.o \
 	faults.o \
 	syscalls.o \
-	heap.o \
+	rtos_support.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)
