@@ -203,3 +203,24 @@ void consoleTask(void*)
 		free(c);
 	}
 }
+
+static TaskHandle_t consoleTaskHandle = NULL;
+void startConsoleTask()
+{
+    if (!consoleTaskHandle) {
+        xTaskCreate(
+            &consoleTask,
+            "Command Line",
+            2048,
+            NULL,
+            tskIDLE_PRIORITY+1,
+            &consoleTaskHandle
+        );
+    }
+}
+
+void stopConsoleTask()
+{
+    vTaskDelete(consoleTaskHandle);
+    consoleTaskHandle = NULL;
+}

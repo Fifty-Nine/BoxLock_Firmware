@@ -211,17 +211,10 @@ static bool usb_line_state_changed(usb_cdc_control_signal_t newState)
 		begin_read();
 		
 		if (!consoleTaskHandle) {
-			xTaskCreate(
-				&consoleTask, "Command Line",
-				2048,
-				NULL,
-				tskIDLE_PRIORITY+1,
-				&consoleTaskHandle
-			);
+            startConsoleTask();
 		}
 	} else if (!usb_dtr && consoleTaskHandle) {
-		vTaskDelete(consoleTaskHandle);
-		consoleTaskHandle = NULL;
+        stopConsoleTask();
 	}
 	
 	return false;
