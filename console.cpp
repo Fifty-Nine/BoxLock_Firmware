@@ -151,7 +151,7 @@ command_t commands[] = {
     {
        "reset",
         [](const char*) { mcu::reset(); },
-        "\tReset the MCU.",
+        "\t\tReset the MCU.",
         nullptr
     },
     {
