@@ -34,3 +34,4 @@
 config.mk
 
 cscope.out
+*.swp
