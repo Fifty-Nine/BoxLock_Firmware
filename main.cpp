@@ -9,7 +9,6 @@
 #include <cerrno>
 
 #include "app_tasks.h"
-#include "box_console.h"
 #include "box_control.h"
 #include "driver_init.h"
 #include "mtb.h"

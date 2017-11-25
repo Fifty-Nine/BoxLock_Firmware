@@ -105,7 +105,7 @@ OBJS:= \
 	linenoise.o \
 	utility.o \
 	box_control.o \
-	box_console.o \
+	console.o \
 	mtb.o \
 	faults.o \
 	syscalls.o \

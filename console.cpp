@@ -5,7 +5,7 @@
 #include <malloc.h>
 
 #include "app_tasks.h"
-#include "box_console.h"
+#include "console.h"
 #include "box_control.h"
 #include "linenoise.h"
 #include "rtos_port.h"

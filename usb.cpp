@@ -6,7 +6,7 @@
  * to avoid loosing it when reconfiguring.
  */
 #include "usb.h"
-#include "box_console.h"
+#include "console.h"
 #include "task.h"
 
 namespace {
