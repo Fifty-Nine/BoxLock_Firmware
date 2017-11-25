@@ -1,11 +1,16 @@
-#include "box_console.h"
-#include "box_control.h"
-#include "linenoise.h"
-#include "rtos_port.h"
 #include <cctype>
 #include <cstdio>
 #include <cstdlib>
 #include <string>
+#include <malloc.h>
+
+#include "app_tasks.h"
+#include "box_console.h"
+#include "box_control.h"
+#include "linenoise.h"
+#include "rtos_port.h"
+#include "mcu.h"
+#include "timers.h"
 
 struct command_t
 {
@@ -109,6 +114,12 @@ command_t commands[] = {
 		"and the new PIN immediately becomes active. If the old PIN is incorrect,\n"
 		"the new PIN is ignored and the console is temporarily locked.\n"
 	},
+    {
+       "reset",
+        [](const char*) { mcu::reset(); },
+        "\tReset the MCU.",
+        nullptr
+    },
 	{
 		"help",
 		&printHelp,

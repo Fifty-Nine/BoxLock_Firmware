@@ -110,6 +110,7 @@ OBJS:= \
 	faults.o \
 	syscalls.o \
 	rtos_support.o \
+	mcu.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)
