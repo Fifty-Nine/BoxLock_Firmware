@@ -107,6 +107,7 @@ OBJS:= \
 	lock_control.o \
 	console.o \
 	mtb.o \
+	keypad.o \
 	faults.o \
 	syscalls.o \
 	rtos_support.o \
