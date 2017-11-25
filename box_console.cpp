@@ -221,6 +221,8 @@ void startConsoleTask()
 
 void stopConsoleTask()
 {
-    vTaskDelete(consoleTaskHandle);
-    consoleTaskHandle = NULL;
+    if (consoleTaskHandle) {
+        vTaskDelete(consoleTaskHandle);
+        consoleTaskHandle = NULL;
+    }
 }

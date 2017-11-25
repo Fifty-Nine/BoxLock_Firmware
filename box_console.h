@@ -3,5 +3,6 @@
 
 void startConsoleTask();
 void stopConsoleTask();
+bool consoleStarted();
 
 #endif /* BOX_CONSOLE_H_ */
