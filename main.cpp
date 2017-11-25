@@ -1,7 +1,4 @@
 #include <stdlib.h>
-#include "driver_init.h"
-#include "persistent_storage_start.h"
-#include "usb.h"
 #include <FreeRTOS.h>
 #include <task.h>
 #include <semphr.h>
@@ -11,13 +8,17 @@
 #include <timers.h>
 #include <cerrno>
 
-#include "box_control.h"
+#include "app_tasks.h"
 #include "box_console.h"
+#include "box_control.h"
+#include "driver_init.h"
 #include "mtb.h"
+#include "persistent_storage_start.h"
+#include "usb.h"
 
 static QueueHandle_t keypadQueue;
 
-static TaskHandle_t lockCtrlTaskHandle;
+TaskHandle_t tasks::lockControl;
 static void lock_task_timer_callback(TimerHandle_t handle)
 {
 	BaseType_t woken;
@@ -64,7 +65,7 @@ static void lock_ctrl_task(void *ctxt)
 	}
 }
 
-static TaskHandle_t keypadScanTaskHandle;
+TaskHandle_t tasks::keypadScan;
 static void keypad_scan_task(void *ctxt)
 {
 	static const int nColumns = 3;
@@ -127,8 +128,23 @@ int main(void)
 	
 	keypadQueue = xQueueCreate(16, sizeof(char));
 	
-	xTaskCreate(&lock_ctrl_task, "Lock Control", 64, NULL, tskIDLE_PRIORITY+1, &lockCtrlTaskHandle);
-	xTaskCreate(&keypad_scan_task, "Keypad Scanner", 64, NULL, tskIDLE_PRIORITY+1, &keypadScanTaskHandle);
+	xTaskCreate(
+        &lock_ctrl_task,
+        "Lock Control",
+        64,
+        NULL,
+        tskIDLE_PRIORITY+1,
+        &tasks::lockControl
+    );
+	xTaskCreate(
+        &keypad_scan_task,
+        "Keypad Scanner",
+        64,
+        NULL,
+        tskIDLE_PRIORITY+1,
+        &tasks::keypadScan
+    );
+
 	vTaskStartScheduler();
 }
 

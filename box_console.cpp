@@ -91,6 +91,38 @@ void setPinCmd(const char *args)
 	}
 }
 
+extern "C" void* sbrk(intptr_t);
+
+void memoryStats(const char*)
+{
+    auto info = mallinfo();
+    printf(
+        "Heap:\n"
+        "\t- heap size     = %#8x\n"
+        "\t- in use blocks = %#8x\n"
+        "\t- free blocks   = %#8x\n"
+        "\t- current sbrk  = %p\n",
+        info.arena,
+        info.uordblks,
+        info.fordblks,
+        sbrk(0)
+    );
+
+    printf(
+        "Task stacks:\n"
+        "\t- Keypad  = %#8lx\n"
+        "\t- Lock    = %#8lx\n"
+        "\t- Console = %#8lx\n"
+        "\t- Idle    = %#8lx\n"
+        "\t- Timer   = %#8lx\n",
+        uxTaskGetStackHighWaterMark(tasks::keypadScan),
+        uxTaskGetStackHighWaterMark(tasks::lockControl),
+        uxTaskGetStackHighWaterMark(tasks::console),
+        uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle()),
+        uxTaskGetStackHighWaterMark(xTimerGetTimerDaemonTaskHandle())
+    );
+}
+
 command_t commands[] = {
 	{ "clear", [](const char *) { linenoiseClearScreen(); }, "\t\tClear the screen.", nullptr },
 	{
@@ -118,6 +150,12 @@ command_t commands[] = {
        "reset",
         [](const char*) { mcu::reset(); },
         "\tReset the MCU.",
+        nullptr
+    },
+    {
+        "mem-stats",
+        &memoryStats,
+        "\tPrint statistics about current memory usage.",
         nullptr
     },
 	{
@@ -215,25 +253,25 @@ void consoleTask(void*)
 	}
 }
 
-static TaskHandle_t consoleTaskHandle = NULL;
+TaskHandle_t tasks::console = NULL;
 void startConsoleTask()
 {
-    if (!consoleTaskHandle) {
+    if (!tasks::console) {
         xTaskCreate(
             &consoleTask,
             "Command Line",
             2048,
             NULL,
             tskIDLE_PRIORITY+1,
-            &consoleTaskHandle
+            &tasks::console
         );
     }
 }
 
 void stopConsoleTask()
 {
-    if (consoleTaskHandle) {
-        vTaskDelete(consoleTaskHandle);
-        consoleTaskHandle = NULL;
+    if (tasks::console) {
+        vTaskDelete(tasks::console);
+        tasks::console = NULL;
     }
 }

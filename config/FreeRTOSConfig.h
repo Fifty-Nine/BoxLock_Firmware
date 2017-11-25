@@ -234,15 +234,15 @@ to exclude the API function. */
 #define INCLUDE_xTaskGetCurrentTaskHandle 0
 #endif
 
-#define INCLUDE_uxTaskGetStackHighWaterMark 0
+#define INCLUDE_uxTaskGetStackHighWaterMark 1
 
 // <q> Include the function to get idle task handler
 // <id> freertos_xtaskgetidletaskhandle
 #ifndef INCLUDE_xTaskGetIdleTaskHandle
-#define INCLUDE_xTaskGetIdleTaskHandle 0
+#define INCLUDE_xTaskGetIdleTaskHandle 1
 #endif
 
-#define INCLUDE_xTimerGetTimerDaemonTaskHandle 0
+#define INCLUDE_xTimerGetTimerDaemonTaskHandle 1
 
 // <q> Include the function to get task name
 // <id> freertos_pctaskgettaskname
