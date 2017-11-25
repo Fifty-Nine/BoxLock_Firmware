@@ -131,7 +131,6 @@ SECTIONS
         _estack = .;
     } > ram
 
-
     .relocate : AT (_etext)
     {
         . = ALIGN(4);
@@ -146,15 +145,9 @@ SECTIONS
     .bss (NOLOAD) :
     {
         . = ALIGN(4);
-        _sbss = . ;
         _szero = .;
-        __bss_start__ = .;
         *(.bss .bss.*)
         . = ALIGN(4);
-        __bss_end__ = .;
-        *(COMMON)
-        . = ALIGN(4);
-        _ebss = . ;
         _ezero = .;
     } > ram
 
