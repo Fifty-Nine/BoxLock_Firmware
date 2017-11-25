@@ -1,5 +1,5 @@
 #include "mtb.h"
-#include "atmel_start_pins.h"
+#include "pins.h"
 #include <hal_gpio.h>
 #include <FreeRTOS.h>
 #include <task.h>

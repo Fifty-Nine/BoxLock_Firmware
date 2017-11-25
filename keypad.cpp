@@ -5,7 +5,7 @@
 #include <cstdio>
 #include <cstring>
 
-#include "atmel_start_pins.h"
+#include "pins.h"
 #include "keypad.h"
 #include "app_tasks.h"
 #include "lock_control.h"

@@ -2,7 +2,7 @@
 
 #include "lock_control.h"
 #include "hal_gpio.h"
-#include "atmel_start_pins.h"
+#include "pins.h"
 #include "rtos_port.h"
 #include "utility.h"
 #include "nv_storage.h"

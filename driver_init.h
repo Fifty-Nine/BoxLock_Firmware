@@ -8,7 +8,7 @@
 #ifndef DRIVER_INIT_INCLUDED
 #define DRIVER_INIT_INCLUDED
 
-#include "atmel_start_pins.h"
+#include "pins.h"
 
 #include <hal_atomic.h>
 #include <hal_delay.h>
