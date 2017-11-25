@@ -1,28 +1,19 @@
 #include <cstring>
 
-#include "box_control.h"
+#include "lock_control.h"
 #include "hal_gpio.h"
 #include "atmel_start_pins.h"
 #include "rtos_port.h"
 #include "utility.h"
 #include "nv_storage.h"
 
+namespace {
 
-static const uint16_t pin_storage_id = 1;
-static char pin[16] = { '1', '2', '3', '4' };
-
+constexpr uint16_t pin_storage_id = 1;
+char pin[16] = { '1', '2', '3', '4' };
 constexpr size_t lockout_wait_time = 5000;
 
-void boxInit()
-{
-	if (nv_storage_item_exists(pin_storage_id)) {
-		nv_storage_read(pin_storage_id, 0, (uint8_t*)&pin, 16);
-	} else {
-		setPin("1234");
-	}
-}
-
-static bool checkPin(const char* guess)
+bool checkPin(const char* guess)
 {
 	size_t i = 0;
 	for (; i < 16 && guess[i] != '\0'; ++i) {
@@ -34,7 +25,18 @@ static bool checkPin(const char* guess)
 	return guess[i] == pin[i];
 }
 
-void unlock(void)
+} /* namespace */
+
+void lock::init()
+{
+	if (nv_storage_item_exists(pin_storage_id)) {
+		nv_storage_read(pin_storage_id, 0, (uint8_t*)&pin, 16);
+	} else {
+		setPin("1234");
+	}
+}
+
+void lock::unlock(void)
 {
 	static const int charge_time = 200;
 	static const int drive_time = 50;
@@ -51,7 +53,7 @@ void unlock(void)
     gpio_set_pin_level(LED_OUT, false);
 }
 
-bool tryUnlock(const char *guess)
+bool lock::tryUnlock(const char *guess)
 {
 	if (checkPin(guess)) {
 		unlock();
@@ -62,7 +64,7 @@ bool tryUnlock(const char *guess)
 	return false;
 }
 
-void setPin(const char *newPin)
+void lock::setPin(const char *newPin)
 {
 	for (size_t i = 0; i < 16 && newPin[i] != '\0'; ++i) {
 		pin[i] = mapToPhoneKeypad(newPin[i]);
@@ -70,7 +72,7 @@ void setPin(const char *newPin)
 	nv_storage_write(pin_storage_id, 0, (uint8_t*)pin, 16);
 }
 
-bool trySetPin(const char *oldPin, const char *newPin)
+bool lock::trySetPin(const char *oldPin, const char *newPin)
 {
 	if (checkPin(oldPin)) {
 		setPin(newPin);

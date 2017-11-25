@@ -9,7 +9,7 @@
 #include <cerrno>
 
 #include "app_tasks.h"
-#include "box_control.h"
+#include "lock_control.h"
 #include "driver_init.h"
 #include "mtb.h"
 #include "persistent_storage_start.h"
@@ -49,7 +49,7 @@ static void lock_ctrl_task(void *ctxt)
 			if (idx != 16) {
 				buffer[idx] = '\0';
 			}
-			if (tryUnlock(buffer)) {
+			if (lock::tryUnlock(buffer)) {
 				memset(buffer, 0, 16);
 				idx = 0;
 				continue;
@@ -123,7 +123,7 @@ int main(void)
     system_init();
     persistent_storage_init();
     usb_init();
-	boxInit();
+    lock::init();
 	
 	keypadQueue = xQueueCreate(16, sizeof(char));
 	

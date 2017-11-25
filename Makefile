@@ -104,7 +104,7 @@ OBJS:= \
 	usb.o \
 	linenoise.o \
 	utility.o \
-	box_control.o \
+	lock_control.o \
 	console.o \
 	mtb.o \
 	faults.o \

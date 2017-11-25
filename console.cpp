@@ -6,7 +6,7 @@
 
 #include "app_tasks.h"
 #include "console.h"
-#include "box_control.h"
+#include "lock_control.h"
 #include "linenoise.h"
 #include "rtos_port.h"
 #include "mcu.h"
@@ -86,7 +86,7 @@ void setPinCmd(const char *args)
 	}
 	
 	
-	if (trySetPin(oldPin, newPin)) {
+	if (lock::trySetPin(oldPin, newPin)) {
 		printf("New PIN successfully set.\n");
 	} else {
 		printf("Invalid PIN.\n");
@@ -130,7 +130,7 @@ command_t commands[] = {
 	{
 		"unlock", 
 		[](const char *pin) {
-			if (tryUnlock(pin)) {
+			if (lock::tryUnlock(pin)) {
 				printf("Box unlocked.\n");
 			} else {
 				printf("Invalid pin.\n");

@@ -1,10 +1,12 @@
-#ifndef BOX_CONTROL_H_
-#define BOX_CONTROL_H_
+#ifndef LOCK_CONTROL_H_
+#define LOCK_CONTROL_H_
 
-void boxInit(void);
+namespace lock {
+void init(void);
 void unlock();
 bool tryUnlock(const char *pin);
 void setPin(const char *pin);
 bool trySetPin(const char *oldPin, const char *newPin);
+} /* namespace lock */
 
-#endif /* BOX_CONTROL_H_ */
+#endif /* LOCK_CONTROL_H_ */
