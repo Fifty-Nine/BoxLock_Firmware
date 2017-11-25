@@ -40,6 +40,7 @@ void unlock(void)
 	static const int drive_time = 50;
 	static const int hold_time = 2000;
 	
+    gpio_set_pin_level(LED_OUT, true);
 	gpio_set_pin_level(PWM_EN, true);
 	os_sleep(charge_time);
 	gpio_set_pin_level(SOL_TRIG, true);
@@ -47,6 +48,7 @@ void unlock(void)
 	gpio_set_pin_level(PWM_EN, false);
 	os_sleep(hold_time);
 	gpio_set_pin_level(SOL_TRIG, false);
+    gpio_set_pin_level(LED_OUT, false);
 }
 
 bool tryUnlock(const char *guess)
