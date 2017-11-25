@@ -108,6 +108,7 @@ OBJS:= \
 	box_control.o \
 	box_console.o \
 	mtb.o \
+	faults.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)

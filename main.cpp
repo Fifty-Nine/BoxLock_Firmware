@@ -227,33 +227,6 @@ static bool usb_line_state_changed(usb_cdc_control_signal_t newState)
 	return false;
 }
 
-extern "C"
-void HardFault_Handler()
-{
-    mtb::stop_trace();
-	__asm("BKPT #0");
-	gpio_set_pin_level(LED_OUT, true);
-	while(1) {}
-}
-
-extern "C"
-void vApplicationMallocFailedHook()
-{
-    mtb::stop_trace();
-	__asm("BKPT #0");
-	gpio_set_pin_level(LED_OUT, true);
-	while(1) {}
-}
-
-extern "C"
-void vApplicationStackOverflowHook()
-{
-    mtb::stop_trace();
-	__asm("BKPT #0");
-	gpio_set_pin_level(LED_OUT, true);
-	while(1) {}
-}
-
 int main(void)
 {
     mtb::init(32);
