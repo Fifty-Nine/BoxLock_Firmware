@@ -1,6 +1,8 @@
 #include "mtb.h"
 #include "atmel_start_pins.h"
 #include <hal_gpio.h>
+#include <FreeRTOS.h>
+#include <task.h>
 
 static inline void errorBlink()
 {
@@ -23,6 +25,15 @@ void HardFault_Handler()
     errorBlink();
 }
 
-void (*vApplicationMallocFailedHook)() = HardFault_Handler;
-void (*vApplicationStackOverflowHook)() = HardFault_Handler;
+extern "C"
+void vApplicationStackOverflowHook(
+    TaskHandle_t task,
+    const char *name)
+{
+    __asm("BKPT #0");
+}
 
+void vApplicationMallocFailedHook()
+{
+    __asm("BKPT #0");
+}
