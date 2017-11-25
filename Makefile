@@ -86,7 +86,6 @@ USB_OBJS:= \
 
 RTOS_OBJS:= \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/tasks.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/portable/MemMang/heap_1.o \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/list.o \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/portable/GCC/ARM_CM0/port.o \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/timers.o \
@@ -110,6 +109,7 @@ OBJS:= \
 	mtb.o \
 	faults.o \
 	syscalls.o \
+	heap.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)

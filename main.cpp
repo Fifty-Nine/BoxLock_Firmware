@@ -127,8 +127,8 @@ int main(void)
 	
 	keypadQueue = xQueueCreate(16, sizeof(char));
 	
-	xTaskCreate(&lock_ctrl_task, "Lock Control", 256, NULL, tskIDLE_PRIORITY+1, &lockCtrlTaskHandle);
-	xTaskCreate(&keypad_scan_task, "Keypad Scanner", 256, NULL, tskIDLE_PRIORITY+1, &keypadScanTaskHandle);
+	xTaskCreate(&lock_ctrl_task, "Lock Control", 64, NULL, tskIDLE_PRIORITY+1, &lockCtrlTaskHandle);
+	xTaskCreate(&keypad_scan_task, "Keypad Scanner", 64, NULL, tskIDLE_PRIORITY+1, &keypadScanTaskHandle);
 	vTaskStartScheduler();
 }
 

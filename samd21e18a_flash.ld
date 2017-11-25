@@ -55,7 +55,8 @@ MEMORY
 }
 
 /* The stack size used by the application. NOTE: you need to adjust according to your application. */
-STACK_SIZE = DEFINED(STACK_SIZE) ? STACK_SIZE : DEFINED(__stack_size__) ? __stack_size__ : 0x2000;
+STACK_SIZE = 0x500;
+INIT_HEAP_SIZE = 0x1000;
 
 /* Section Definitions */
 SECTIONS
@@ -119,6 +120,17 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;
+    
+    /* stack section */
+    .stack (NOLOAD):
+    {
+        . = ALIGN(8);
+        _sstack = .;
+        . = . + STACK_SIZE;
+        . = ALIGN(8);
+        _estack = .;
+    } > ram
+
 
     .relocate : AT (_etext)
     {
@@ -146,18 +158,15 @@ SECTIONS
         _ezero = .;
     } > ram
 
-    /* stack section */
-    .stack (NOLOAD):
+    .heap (NOLOAD):
     {
-        . = ALIGN(8);
-        _sstack = .;
-        . = . + STACK_SIZE;
-        . = ALIGN(8);
-        _estack = .;
-    } > ram
+        . = ALIGN(4);
+        __heap_start__ = .;
+        . = . + INIT_HEAP_SIZE;
+        __heap_end__ = .;
+    }
 
-    . = ALIGN(4);
-    end = . ;
+    __sram_end__ = ORIGIN(ram) + LENGTH(ram);
 
     .mtb (NOLOAD):
     {

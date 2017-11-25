@@ -322,6 +322,9 @@ to all Cortex-M ports, and do not rely on any particular library functions. */
 #define configKERNEL_INTERRUPT_PRIORITY (configLIBRARY_LOWEST_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 #define configMAX_SYSCALL_INTERRUPT_PRIORITY (configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY << (8 - configPRIO_BITS))
 
+#include <reent.h>
+#define configUSE_NEWLIB_REENTRANT 1
+
 // <<< end of configuration section >>>
 
 #endif // FREERTOSCONFIG_H
