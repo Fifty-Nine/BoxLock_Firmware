@@ -12,6 +12,8 @@
 #include "mcu.h"
 #include "timers.h"
 
+namespace {
+
 struct command_t
 {
 	const char *name;
@@ -253,8 +255,10 @@ void consoleTask(void*)
 	}
 }
 
+} /* namespace */
+
 TaskHandle_t tasks::console = NULL;
-void startConsoleTask()
+void console::startTask()
 {
     if (!tasks::console) {
         xTaskCreate(
@@ -268,7 +272,7 @@ void startConsoleTask()
     }
 }
 
-void stopConsoleTask()
+void console::stopTask()
 {
     if (tasks::console) {
         vTaskDelete(tasks::console);

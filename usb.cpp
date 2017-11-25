@@ -92,10 +92,10 @@ static bool usb_line_state_changed(usb_cdc_control_signal_t newState)
 		cdcdf_acm_register_callback(CDCDF_ACM_CB_READ, (FUNC_PTR)usb_read_callback);
 	}
 	
-    stopConsoleTask();
+    console::stopTask();
 	if (usb_dtr) {
 		begin_read();
-        startConsoleTask();
+        console::startTask();
 	}
 	
 	return false;
