@@ -1,16 +1,7 @@
-/* Auto-generated config file FreeRTOSConfig.h */
 #ifndef FREERTOSCONFIG_H
 #define FREERTOSCONFIG_H
 
-// <<< Use Configuration Wizard in Context Menu >>>
-
-#if defined(__GNUC__) || defined(__ICCARM__)
-/* Important: put #includes here unless they are also meant for the assembler.
- */
 #include <stdint.h>
-void assert_triggered(const char *file, uint32_t line);
-#endif
-
 #include <peripheral_clk_config.h>
 
 // <h> Basic
@@ -35,25 +26,16 @@ void assert_triggered(const char *file, uint32_t line);
 #define configMINIMAL_STACK_SIZE ((uint16_t)64)
 #endif
 
-/* configTOTAL_HEAP_SIZE is not used when heap_3.c is used. */
-// <o> Heap size<64-1048576:4>
-// <i> Defines the heap size(byte) on system
-// <i> Default: 2400
-// <id> freertos_total_heap_size
-#ifndef configTOTAL_HEAP_SIZE
-#define configTOTAL_HEAP_SIZE ((size_t)(16384))
-#endif
-
 // <q> Enable mutex
 // <id> freertos_use_mutexes
 #ifndef configUSE_MUTEXES
-#define configUSE_MUTEXES 1
+#define configUSE_MUTEXES 0
 #endif
 
 // <q> Enable counting semaphore
 // <id> freertos_use_counting_semaphores
 #ifndef configUSE_COUNTING_SEMAPHORES
-#define configUSE_COUNTING_SEMAPHORES 1
+#define configUSE_COUNTING_SEMAPHORES 0
 #endif
 
 // </h>
@@ -73,7 +55,11 @@ void assert_triggered(const char *file, uint32_t line);
 // <q> Use recursive mutex
 // <id> freertos_use_recursive_mutexes
 #ifndef configUSE_RECURSIVE_MUTEXES
+#if configUSE_MUTEXES
 #define configUSE_RECURSIVE_MUTEXES 1
+#else
+#define configUSE_RECURSIVE_MUTEXES 0
+#endif
 #endif
 
 // <q> Generate runtime stats
@@ -286,12 +272,12 @@ to exclude the API function. */
 
 /* Normal assert() semantics without relying on the provision of an assert.h
 header file. */
-#define configASSERT(x)                                                                                                \
-	if ((x) == 0) {                                                                                                    \
-		taskDISABLE_INTERRUPTS();                                                                                      \
-		for (;;)                                                                                                       \
-			;                                                                                                          \
-	}
+#if 1
+#define configASSERT(x) \
+    do { if (!(x)) __asm("bkpt #0"); } while(0)
+#else
+#define configASSERT(...)
+#endif
 
 /* Definitions that map the FreeRTOS port interrupt handlers to their CMSIS
 standard names - or at least those used in the unmodified vector table. */

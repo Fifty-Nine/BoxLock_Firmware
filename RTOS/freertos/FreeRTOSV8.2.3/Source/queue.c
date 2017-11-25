@@ -260,12 +260,14 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
                                   uint8_t *pucQueueStorage, const uint8_t ucQueueType,
                                   Queue_t *pxNewQueue) PRIVILEGED_FUNCTION;
 
+#if configUSE_MUTEXES
 /*
  * Mutexes are a special type of queue.  When a mutex is created, first the
  * queue is created, then prvInitialiseMutex() is called to configure the queue
  * as a mutex.
  */
 static void prvInitialiseMutex(Queue_t *pxNewQueue);
+#endif
 
 /*-----------------------------------------------------------*/
 
@@ -470,6 +472,7 @@ static void prvInitialiseNewQueue(const UBaseType_t uxQueueLength, const UBaseTy
 }
 /*-----------------------------------------------------------*/
 
+#if configUSE_MUTEXES
 static void prvInitialiseMutex(Queue_t *pxNewQueue)
 {
 	if (pxNewQueue != NULL) {
@@ -491,6 +494,7 @@ static void prvInitialiseMutex(Queue_t *pxNewQueue)
 		traceCREATE_MUTEX_FAILED();
 	}
 }
+#endif
 /*-----------------------------------------------------------*/
 
 #if ((configUSE_MUTEXES == 1) && (configSUPPORT_DYNAMIC_ALLOCATION == 1))
