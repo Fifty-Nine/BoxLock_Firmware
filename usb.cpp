@@ -5,7 +5,6 @@
  * Please copy examples or other code you want to keep to a separate file or main.c
  * to avoid loosing it when reconfiguring.
  */
-#include "atmel_start.h"
 #include "usb.h"
 
 #if CONF_USBD_HS_SP

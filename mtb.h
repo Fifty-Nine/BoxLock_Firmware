@@ -1,12 +1,8 @@
 #ifndef MTB_H
 #define MTB_H
 
-#include <stddef.h>
-#include <stdint.h>
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <cstddef>
+#include <cstdint>
 
 namespace mtb {
 
@@ -31,9 +27,5 @@ inline void resume_trace() {
 }
 
 } /* namespace mtb */
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif /* MTB_H */

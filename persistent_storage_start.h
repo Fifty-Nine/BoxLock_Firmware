@@ -8,10 +8,6 @@
 #ifndef _PERSISTENT_STORAGE_MAIN_H_INCLUDED
 #define _PERSISTENT_STORAGE_MAIN_H_INCLUDED
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /**
  * \brief Initialize Persistent Storage
  */
@@ -25,9 +21,5 @@ void persistent_storage_init(void);
  * script. If it is not reserved, flash content may get corrupted.
  */
 void persistent_storage_example(void);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif // _PERSISTENT_STORAGE_MAIN_H_INCLUDED

@@ -42,6 +42,10 @@
 #include "usbdc.h"
 #include "usb_protocol_cdc.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif /* __cplusplus */
+
 /** CDC ACM Class Callback Type */
 enum cdcdf_acm_cb_type { CDCDF_ACM_CB_READ, CDCDF_ACM_CB_WRITE, CDCDF_ACM_CB_LINE_CODING_C, CDCDF_ACM_CB_STATE_C };
 
@@ -110,5 +114,9 @@ const struct usb_cdc_line_coding *cdcdf_acm_get_line_coding(void);
  * \brief Return version
  */
 uint32_t cdcdf_acm_get_version(void);
+
+#ifdef __cplusplus
+}
+#endif /* __cplusplus */
 
 #endif /* USBDF_CDC_ACM_SER_H_ */

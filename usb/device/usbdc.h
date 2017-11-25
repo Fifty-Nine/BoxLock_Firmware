@@ -44,6 +44,10 @@
 #include "hal_usb_device.h"
 #include "usbd_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /** USB device states. */
 enum usbd_state {
 	USBD_S_OFF     = 0,
@@ -251,5 +255,9 @@ uint8_t usbdc_get_state(void);
  * \brief Return version
  */
 uint32_t usbdc_get_version(void);
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
 
 #endif /* USBDC_H_ */

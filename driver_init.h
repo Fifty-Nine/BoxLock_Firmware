@@ -10,10 +10,6 @@
 
 #include "atmel_start_pins.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <hal_atomic.h>
 #include <hal_delay.h>
 #include <hal_gpio.h>
@@ -48,7 +44,4 @@ void USB_DEVICE_INSTANCE_init(void);
  */
 void system_init(void);
 
-#ifdef __cplusplus
-}
-#endif
 #endif // DRIVER_INIT_INCLUDED
