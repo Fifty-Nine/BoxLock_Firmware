@@ -4,6 +4,7 @@
 namespace mcu {
 
 void reset() __attribute__((noreturn));
+void breakpoint();
 
 } /* namespace mcu */
 

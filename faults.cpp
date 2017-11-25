@@ -3,6 +3,7 @@
 #include <hal_gpio.h>
 #include <FreeRTOS.h>
 #include <task.h>
+#include "mcu.h"
 
 static inline void errorBlink()
 {
@@ -20,9 +21,8 @@ static inline void errorBlink()
 extern "C"
 void HardFault_Handler()
 {
-    mtb::stop_trace();
-    __asm("BKPT #0");
-    errorBlink();
+    mcu::breakpoint();
+    mcu::reset();
 }
 
 extern "C"
@@ -30,10 +30,12 @@ void vApplicationStackOverflowHook(
     TaskHandle_t task,
     const char *name)
 {
-    __asm("BKPT #0");
+    mcu::breakpoint();
+    mcu::reset();
 }
 
 void vApplicationMallocFailedHook()
 {
-    __asm("BKPT #0");
+    mcu::breakpoint();
+    mcu::reset();
 }
