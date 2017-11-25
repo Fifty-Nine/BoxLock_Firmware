@@ -13,13 +13,4 @@
  */
 void persistent_storage_init(void);
 
-/**
- * \brief Persistent storage example
- *
- * IMPORTANT! Be careful running this example. It makes assumption that storage
- * area provided in Persistent storage configuration is reserved in the linker
- * script. If it is not reserved, flash content may get corrupted.
- */
-void persistent_storage_example(void);
-
 #endif // _PERSISTENT_STORAGE_MAIN_H_INCLUDED
