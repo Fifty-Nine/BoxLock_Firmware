@@ -22,16 +22,9 @@ void keypadTimeout(TimerHandle_t handle)
     xQueueSendToBackFromISR(keypadQueue, "!", &woken);
 }
 
+TimerHandle_t timeoutTimer;
 void lockControlTask(void *ctxt)
 {
-    TimerHandle_t timeout_timer = xTimerCreate(
-        "Keypad Delay Timer",
-        1000,
-        pdFALSE,
-        NULL,
-        keypadTimeout   
-    );
-
     char buffer[16] = { 0 };
     size_t idx = 0;
     while (1)
@@ -58,7 +51,7 @@ void lockControlTask(void *ctxt)
             continue;
         }
         buffer[idx++] = c;
-        xTimerReset(timeout_timer, portMAX_DELAY);
+        xTimerReset(timeoutTimer, portMAX_DELAY);
     }
 }
 
@@ -110,27 +103,51 @@ void keypadScanTask(void *ctxt)
     }
 }
 
+StaticTask_t lockTaskCtxt;
+StackType_t lockTaskStack[64];
+StaticTask_t keypadTaskCtxt;
+StackType_t keypadTaskStack[64];
+StaticQueue_t keypadQueueCtxt;
+uint8_t keypadQueueBuffer[16];
+StaticTimer_t timeoutTimerCtxt;
+
 } /* namespace */
 
 void keypad::init()
 {
-    keypadQueue = xQueueCreate(16, sizeof(char));
-    
-    xTaskCreate(
+    keypadQueue = xQueueCreateStatic(
+        16,
+        sizeof(char),
+        keypadQueueBuffer,
+        &keypadQueueCtxt
+    );
+    timeoutTimer = xTimerCreateStatic(
+        "Keypad Delay Timer",
+        1000,
+        pdFALSE,
+        NULL,
+        keypadTimeout,
+        &timeoutTimerCtxt
+    );
+    xTaskCreateStatic(
         &lockControlTask,
         "Lock Control",
-        64,
-        NULL,
-        tskIDLE_PRIORITY+1,
-        &tasks::lockControl
+        sizeof(lockTaskStack) / sizeof(StackType_t),
+        nullptr,
+        tskIDLE_PRIORITY + 1,
+        &tasks::lockControl,
+        lockTaskStack,
+        &lockTaskCtxt
     );
-    xTaskCreate(
+    xTaskCreateStatic(
         &keypadScanTask,
         "Keypad Scanner",
-        64,
-        NULL,
-        tskIDLE_PRIORITY+1,
-        &tasks::keypadScan
+        sizeof(keypadTaskStack) / sizeof(StackType_t),
+        nullptr,
+        tskIDLE_PRIORITY + 1,
+        &tasks::keypadScan,
+        keypadTaskStack,
+        &keypadTaskCtxt
     );
 
 }
