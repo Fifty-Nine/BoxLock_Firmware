@@ -136,14 +136,14 @@ void memoryStats(const char*)
 
     printf(
         "Task stacks:\n"
-        "\t- Keypad  = %#8lx\n"
-        "\t- Lock    = %#8lx\n"
-        "\t- Console = %#8lx\n"
-        "\t- USB     = %#8lx\n"
-        "\t- Idle    = %#8lx\n"
-        "\t- Timer   = %#8lx\n\n",
+        "\t- Keypad (Scan)    = %#8lx\n"
+        "\t- Keypad (Control) = %#8lx\n"
+        "\t- Console          = %#8lx\n"
+        "\t- USB              = %#8lx\n"
+        "\t- Idle             = %#8lx\n"
+        "\t- Timer            = %#8lx\n\n",
         uxTaskGetStackHighWaterMark(tasks::keypadScan),
-        uxTaskGetStackHighWaterMark(tasks::lockControl),
+        uxTaskGetStackHighWaterMark(tasks::keypadControl),
         uxTaskGetStackHighWaterMark(tasks::console),
         uxTaskGetStackHighWaterMark(tasks::usb),
         uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle()),

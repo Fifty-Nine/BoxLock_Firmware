@@ -14,7 +14,7 @@
 #include "rtos_port.h"     // for os_sleep
 #include "task.h"          // for xTaskCreateStatic, TaskHandle_t, tskIDLE_P...
 
-TaskHandle_t tasks::lockControl;
+TaskHandle_t tasks::keypadControl;
 TaskHandle_t tasks::keypadScan;
 
 namespace {
@@ -36,7 +36,7 @@ void beep(int ticks)
     }
 }
 
-void lockControlTask(void *ctxt)
+void keypadControlTask(void *ctxt)
 {
     char buffer[16] = { 0 };
     size_t idx = 0;
@@ -191,12 +191,12 @@ void keypad::init()
     );
 
     xTaskCreateStatic(
-        &lockControlTask,
-        "Lock Control",
+        &keypadControlTask,
+        "Keypad Control",
         sizeof(lockTaskStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY + 1,
-        &tasks::lockControl,
+        &tasks::keypadControl,
         lockTaskStack,
         &lockTaskCtxt
     );
