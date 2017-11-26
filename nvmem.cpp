@@ -1,11 +1,18 @@
-#include "driver_init.h"
+#include "nvmem.h"
+
+#include <hal_flash.h>
+#include <hpl_pm_base.h>
+
 #include "nv.h"
 #include "nv_storage.h"
-#include "nvmem.h"
+
+flash_descriptor flash_desc;
 
 void nvmem::init(void)
 {
-    nv_init(&FLASH_0);
+    _pm_enable_bus_clock(PM_BUS_APBB, NVMCTRL);
+    flash_init(&flash_desc, NVMCTRL);
+    nv_init(&flash_desc);
     nv_storage_init();
 }
 

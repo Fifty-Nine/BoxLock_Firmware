@@ -29,6 +29,18 @@ bool checkPin(const char* guess)
 
 void lock::init()
 {
+    gpio_set_pin_direction(SOL_TRIG, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(SOL_TRIG, false);
+    gpio_set_pin_function(SOL_TRIG, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(PWM_EN, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(PWM_EN, false);
+    gpio_set_pin_function(PWM_EN, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(LED_OUT, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(LED_OUT, false);
+    gpio_set_pin_function(LED_OUT, GPIO_PIN_FUNCTION_OFF);
+
     if (!nvmem::read(nvmem::pin_id, &pin, 16)) {
         setPin("1234");
     }

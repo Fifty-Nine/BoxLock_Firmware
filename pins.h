@@ -25,8 +25,8 @@
 #define KEYPADI1 GPIO(GPIO_PORTA, 19)
 #define KEYPADI2 GPIO(GPIO_PORTA, 22)
 #define KEYPADI3 GPIO(GPIO_PORTA, 23)
-#define PA24 GPIO(GPIO_PORTA, 24)
-#define PA25 GPIO(GPIO_PORTA, 25)
+#define USB_DM   GPIO(GPIO_PORTA, 24)
+#define USB_DP   GPIO(GPIO_PORTA, 25)
 
 #elif BOARD_REV == 100
 
@@ -45,8 +45,8 @@
 #define KEYPADI1 GPIO(GPIO_PORTA, 18)
 #define KEYPADI2 GPIO(GPIO_PORTA, 19)
 #define KEYPADI3 GPIO(GPIO_PORTA, 22)
-#define PA24 GPIO(GPIO_PORTA, 24)
-#define PA25 GPIO(GPIO_PORTA, 25)
+#define USB_DM   GPIO(GPIO_PORTA, 24)
+#define USB_DP   GPIO(GPIO_PORTA, 25)
 
 #else
 #error "Unrecognized or undefined board revision."

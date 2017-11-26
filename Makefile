@@ -98,7 +98,6 @@ OBJS:= \
 	$(PERSISTENT_STORAGE_OBJS) \
 	$(USB_OBJS) \
 	$(RTOS_OBJS) \
-	driver_init.o \
 	nvmem.o \
 	usb.o \
 	linenoise.o \

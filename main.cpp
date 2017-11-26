@@ -1,16 +1,16 @@
 #include <FreeRTOS.h>
 #include <task.h>                      // for vTaskStartScheduler
-#include "driver_init.h"               // for system_init
-#include "keypad.h"                    // for init
-#include "lock_control.h"              // for init
-#include "mtb.h"                       // for init
+#include "keypad.h"                    // for keypad::init
+#include "lock_control.h"              // for lock::init
+#include "mcu.h"                       // for mcu::init
+#include "mtb.h"                       // for mtb::init
 #include "nvmem.h"                     // for nvmem::init
 #include "usb.h"                       // for usb_init
 
 int main(void)
 {
     mtb::init(32);
-    system_init();
+    mcu::init();
     nvmem::init();
     usb::init();
     lock::init();

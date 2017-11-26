@@ -1,12 +1,17 @@
 #include "usb.h"
+
+#include <hpl_gclk_base.h>          // for _gclk_enable_channel
+#include <hpl_pm_base.h>       // for PM_BUS_APBB
 #include <hpl_usb.h>           // for usb_xfer_code, usb_xfer_code::USB_XFER...
 #include <sys/_stdint.h>       // for uint8_t, uint32_t
 #include <utils.h>             // for FUNC_PTR
+
 #include "cdcdf_acm.h"         // for cdcdf_acm_is_enabled, cdcdf_acm_regist...
 #include "cdcdf_acm_desc.h"    // for CDCD_ACM_DESCES_LS_FS
 #include "FreeRTOS.h"          // required for task.h, queue.h
 #include "console.h"           // for startTask, stopTask
 #include "portmacro.h"         // for TickType_t, portMAX_DELAY, BaseType_t
+#include "pins.h"              // for USB_DM, USB_DP
 #include "projdefs.h"          // for pdTRUE
 #include "queue.h"             // for xQueueReceive, QueueHandle_t, xQueueCr...
 #include "task.h"              // for xTaskCreate, TaskHandle_t, tskIDLE_PRI...
@@ -123,10 +128,34 @@ static void usb_task(void* ctxt)
 
 void usb::init(void)
 {
+    /* Set up USB clocking. */
+    _pm_enable_bus_clock(PM_BUS_APBB, USB);
+    _pm_enable_bus_clock(PM_BUS_AHB, USB);
+    _gclk_enable_channel(USB_GCLK_ID, CONF_GCLK_USB_SRC);
+
+    /* Initialize the peripheral. */
+    usb_d_init();
+
+    /* Configure USB pins. */
+    gpio_set_pin_direction(USB_DM, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(USB_DM, false);
+    gpio_set_pin_pull_mode(USB_DM, GPIO_PULL_OFF);
+    gpio_set_pin_function(USB_DM, PINMUX_PA24G_USB_DM);
+
+    gpio_set_pin_direction(USB_DP, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(USB_DP, false);
+    gpio_set_pin_pull_mode(USB_DP, GPIO_PULL_OFF);
+    gpio_set_pin_function(USB_DP, PINMUX_PA25G_USB_DP);
+
+    /* Start the middleware. */
+    cdc_device_acm_init();
+
+    /* Set up monitoring task. */
     stdinQueue = xQueueCreate(64, sizeof(char));
     stdoutQueue = xQueueCreate(64, sizeof(char));
-    cdc_device_acm_init();
     xTaskCreate(&usb_task, "USB Task", 256, NULL, tskIDLE_PRIORITY+1, &usbTaskHandle);
+
+    /* Register callbacks. */
     cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_line_state_changed);
 }
 

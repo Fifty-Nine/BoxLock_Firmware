@@ -119,6 +119,36 @@ StaticTimer_t timeoutTimerCtxt;
 
 void keypad::init()
 {
+    /* Configure keypad IO. */
+    gpio_set_pin_direction(KEYPADO0, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(KEYPADO0, true);
+    gpio_set_pin_function(KEYPADO0, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADO1, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(KEYPADO1, true);
+    gpio_set_pin_function(KEYPADO1, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADO2, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(KEYPADO2, true);
+    gpio_set_pin_function(KEYPADO2, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADI0, GPIO_DIRECTION_IN);
+    gpio_set_pin_pull_mode(KEYPADI0, GPIO_PULL_UP);
+    gpio_set_pin_function(KEYPADI0, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADI1, GPIO_DIRECTION_IN);
+    gpio_set_pin_pull_mode(KEYPADI1, GPIO_PULL_UP);
+    gpio_set_pin_function(KEYPADI1, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADI2, GPIO_DIRECTION_IN);
+    gpio_set_pin_pull_mode(KEYPADI2, GPIO_PULL_UP);
+    gpio_set_pin_function(KEYPADI2, GPIO_PIN_FUNCTION_OFF);
+
+    gpio_set_pin_direction(KEYPADI3, GPIO_DIRECTION_IN);
+    gpio_set_pin_pull_mode(KEYPADI3, GPIO_PULL_UP);
+    gpio_set_pin_function(KEYPADI3, GPIO_PIN_FUNCTION_OFF);
+
+    /* Set up monitoring tasks. */
     keypadQueue = xQueueCreateStatic(
         16,
         sizeof(char),
