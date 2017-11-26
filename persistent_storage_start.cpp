@@ -15,7 +15,7 @@
  */
 void persistent_storage_init(void)
 {
-	nv_init(&FLASH_0);
-	nv_storage_init();
+    nv_init(&FLASH_0);
+    nv_storage_init();
 }
 

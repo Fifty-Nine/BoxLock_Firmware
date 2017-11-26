@@ -15,7 +15,7 @@ int _read(int fd, const char *const buf, size_t count)
 extern "C"
 int _write(int fd, const char *const buf, size_t count)
 {
-	if (fd != 1 && fd != 2) {
+    if (fd != 1 && fd != 2) {
         errno = EBADF;
         return 0;
     }
