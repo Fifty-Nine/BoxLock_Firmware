@@ -5,15 +5,20 @@
  * Please copy examples or other code you want to keep to a separate file
  * to avoid losing it when reconfiguring.
  */
-
 #include "driver_init.h"
 
-#include <hal_init.h>
-#include <peripheral_clk_config.h>
-#include <utils.h>
-#include <hal_init.h>
-#include <hpl_gclk_base.h>
-#include <hpl_pm_base.h>
+#include <hal_gpio.h>               // for gpio_set_pin_function, gpio_set_p...
+#include <hal_init.h>               // for init_mcu
+#include <hal_usb_device.h>         // for usb_d_init
+#include <hpl_gclk_base.h>          // for _gclk_enable_channel
+#include <hpl_gpio.h>               // for gpio_port::GPIO_PORTA, GPIO_PIN_F...
+#include <hpl_pm_base.h>            // for _pm_enable_bus_clock, _pm_bus::PM...
+#include <hpl_tcc.h>                // for _tcc_get_pwm
+#include <peripheral_clk_config.h>  // for CONF_GCLK_USB_FREQUENCY, CONF_GCL...
+#include "instance/tcc0.h"          // for TCC0_GCLK_ID
+#include "instance/usb.h"           // for USB_GCLK_ID
+#include "pins.h"                   // for PA24, PA25, KEYPADI0, KEYPADI1
+#include "samd21.h"                 // for NVMCTRL, TCC0, USB
 
 struct flash_descriptor FLASH_0;
 

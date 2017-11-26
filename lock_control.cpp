@@ -1,3 +1,4 @@
+#include <cstdio>
 #include <cstring>
 
 #include "lock_control.h"

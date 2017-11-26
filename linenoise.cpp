@@ -103,15 +103,15 @@
  *
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <strings.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <unistd.h>
 #include "linenoise.h"
+#include <ctype.h>       // for isprint
+#include <stdio.h>       // for snprintf, printf, fflush, EOF, fgetc, fgets
+#include <stdlib.h>      // for free, malloc, realloc, getenv
+#include <string.h>      // for strlen, memmove, strdup, memcpy, memset, memcmp
+#include <strings.h>     // for strcasecmp
+#include <sys/errno.h>   // for errno, EAGAIN, EINVAL
+#include <sys/reent.h>   // for _reent
+#include <sys/unistd.h>  // for write, read, STDIN_FILENO, STDOUT_FILENO
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100
 #define LINENOISE_MAX_LINE 4096

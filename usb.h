@@ -1,11 +1,7 @@
 #ifndef USB_DEVICE_MAIN_H
 #define USB_DEVICE_MAIN_H
 
-#include "cdcdf_acm.h"
-#include "cdcdf_acm_desc.h"
-
-#include <FreeRTOS.h>
-#include <queue.h>
+#include <cstddef>
 
 /**
  * \brief Initialize USB

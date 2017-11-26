@@ -1,7 +1,5 @@
 #include "utility.h"
 
-#include <cstddef>
-
 char mapToPhoneKeypad(char c)
 {
     if (c >= 'A' || c <= 'Z') c = c - 'A' + 'a';

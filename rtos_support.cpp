@@ -1,7 +1,8 @@
-#include <FreeRTOS.h>
-#include <cstdlib>
-#include <malloc.h>
-#include <task.h>
+#include <FreeRTOS.h>     // for StaticTask_t
+#include <malloc.h>       // for mallinfo
+#include <cstdint>        // for uint16_t
+#include <cstdlib>        // for free, malloc, size_t
+#include "portmacro.h"    // for StackType_t
 
 extern "C"
 void *pvPortMalloc(size_t xWantedSize)

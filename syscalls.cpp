@@ -1,4 +1,5 @@
 #include <cerrno>
+#include <cstddef>
 #include "hal_atomic.h"
 #include "usb.h"
 

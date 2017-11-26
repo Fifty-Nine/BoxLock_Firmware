@@ -1,13 +1,18 @@
-/*
- * Code generated from Atmel Start.
- *
- * This file will be overwritten when reconfiguring your Atmel Start project.
- * Please copy examples or other code you want to keep to a separate file or main.c
- * to avoid loosing it when reconfiguring.
- */
 #include "usb.h"
-#include "console.h"
-#include "task.h"
+#include <hpl_usb.h>           // for usb_xfer_code, usb_xfer_code::USB_XFER...
+#include <sys/_stdint.h>       // for uint8_t, uint32_t
+#include <utils.h>             // for FUNC_PTR
+#include "cdcdf_acm.h"         // for cdcdf_acm_is_enabled, cdcdf_acm_regist...
+#include "cdcdf_acm_desc.h"    // for CDCD_ACM_DESCES_LS_FS
+#include "FreeRTOS.h"          // required for task.h, queue.h
+#include "console.h"           // for startTask, stopTask
+#include "portmacro.h"         // for TickType_t, portMAX_DELAY, BaseType_t
+#include "projdefs.h"          // for pdTRUE
+#include "queue.h"             // for xQueueReceive, QueueHandle_t, xQueueCr...
+#include "task.h"              // for xTaskCreate, TaskHandle_t, tskIDLE_PRI...
+#include "usb_protocol_cdc.h"  // for usb_cdc_control_signal_t, usb_cdc_cont...
+#include "usbd_config.h"       // for CONF_USBD_HS_SP
+#include "usbdc.h"             // for usbdc_attach, usbdc_init, usbdc_start
 
 namespace {
 

@@ -7,7 +7,6 @@
  */
 #include "driver_init.h"
 #include "nv.h"
-#include "string.h"
 #include "nv_storage.h"
 
 /**

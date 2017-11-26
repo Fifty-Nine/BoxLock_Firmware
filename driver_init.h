@@ -8,21 +8,8 @@
 #ifndef DRIVER_INIT_INCLUDED
 #define DRIVER_INIT_INCLUDED
 
-#include "pins.h"
-
-#include <hal_atomic.h>
-#include <hal_delay.h>
-#include <hal_gpio.h>
-#include <hal_init.h>
-#include <hal_io.h>
-#include <hal_sleep.h>
-
 #include <hal_flash.h>
-
 #include <hal_pwm.h>
-#include <hpl_tcc.h>
-
-#include <hal_usb_device.h>
 
 extern struct flash_descriptor FLASH_0;
 

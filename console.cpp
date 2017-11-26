@@ -1,16 +1,18 @@
-#include <cctype>
-#include <cstdio>
-#include <cstdlib>
-#include <string>
-#include <malloc.h>
-
-#include "app_tasks.h"
 #include "console.h"
-#include "lock_control.h"
-#include "linenoise.h"
-#include "rtos_port.h"
-#include "mcu.h"
-#include "timers.h"
+#include <malloc.h>        // for mallinfo
+#include <cctype>          // for isspace
+#include <cstdio>          // for printf, NULL, size_t
+#include <cstdint>         // for intptr_t
+#include <cstdlib>         // for free
+#include <string>          // for string
+#include "FreeRTOS.h"      // for StaticTask_t
+#include "app_tasks.h"     // for console, keypadScan, lockControl
+#include "linenoise.h"     // for linenoiseClearScreen, linenoise, linenoise...
+#include "lock_control.h"  // for tryUnlock, trySetPin
+#include "mcu.h"           // for reset
+#include "portmacro.h"     // for StackType_t
+#include "task.h"          // for uxTaskGetStackHighWaterMark, vTaskDelete
+#include "timers.h"        // for xTimerGetTimerDaemonTaskHandle
 
 namespace {
 

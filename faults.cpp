@@ -1,9 +1,8 @@
-#include "mtb.h"
-#include "pins.h"
-#include <hal_gpio.h>
-#include <FreeRTOS.h>
-#include <task.h>
-#include "mcu.h"
+#include <hal_gpio.h>  // for gpio_set_pin_level
+#include <FreeRTOS.h>  // Required for task.h
+#include <task.h>      // for TaskHandle_t
+#include "mcu.h"       // for breakpoint, reset
+#include "pins.h"      // for LED_OUT
 
 static inline void errorBlink()
 {

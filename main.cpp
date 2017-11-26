@@ -1,20 +1,11 @@
-#include <stdlib.h>
 #include <FreeRTOS.h>
-#include <task.h>
-#include <semphr.h>
-#include <hal_rtos.h>
-#include <stdbool.h>
-#include <stdio.h>
-#include <timers.h>
-#include <cerrno>
-
-#include "app_tasks.h"
-#include "lock_control.h"
-#include "keypad.h"
-#include "driver_init.h"
-#include "mtb.h"
-#include "persistent_storage_start.h"
-#include "usb.h"
+#include <task.h>                      // for vTaskStartScheduler
+#include "driver_init.h"               // for system_init
+#include "keypad.h"                    // for init
+#include "lock_control.h"              // for init
+#include "mtb.h"                       // for init
+#include "persistent_storage_start.h"  // for persistent_storage_init
+#include "usb.h"                       // for usb_init
 
 int main(void)
 {

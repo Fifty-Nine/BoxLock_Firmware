@@ -1,14 +1,18 @@
-#include <FreeRTOS.h>
-#include <hal_rtos.h>
-#include <queue.h>
-#include <timers.h>
-#include <cstdio>
-#include <cstring>
-
-#include "pins.h"
 #include "keypad.h"
-#include "app_tasks.h"
-#include "lock_control.h"
+#include <FreeRTOS.h>      // for StaticTask_t, StaticQueue_t, StaticTimer_t
+#include <hal_gpio.h>      // for gpio_set_pin_direction, gpio_get_pin_level
+#include <queue.h>         // for QueueHandle_t, xQueueCreateStatic, xQueueR...
+#include <sys/_stdint.h>   // for uint8_t
+#include <timers.h>        // for TimerHandle_t, xTimerCreateStatic, xTimerR...
+#include <cstdio>          // for NULL, size_t
+#include <cstring>         // for memset
+#include "app_tasks.h"     // for namespace tasks
+#include "lock_control.h"  // for tryUnlock
+#include "pins.h"          // for KEYPADI0, KEYPADI1, KEYPADI2, KEYPADI3
+#include "portmacro.h"     // for StackType_t, TickType_t, portMAX_DELAY
+#include "projdefs.h"      // for pdFALSE
+#include "rtos_port.h"     // for os_sleep
+#include "task.h"          // for xTaskCreateStatic, TaskHandle_t, tskIDLE_P...
 
 TaskHandle_t tasks::lockControl;
 TaskHandle_t tasks::keypadScan;

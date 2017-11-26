@@ -1,7 +1,6 @@
 #include "mtb.h"
 #include <cassert>
 #include <cstdint>
-#include <cstdlib>
 #include <cstring>
 
 struct mtb::registers_t mtb::regs __attribute__((section(".mtb")));
