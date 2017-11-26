@@ -6,6 +6,7 @@
 #include <sys/_stdint.h>       // for uint8_t, uint32_t
 #include <utils.h>             // for FUNC_PTR
 
+#include "app_tasks.h"         // for tasks::usb
 #include "cdcdf_acm.h"         // for cdcdf_acm_is_enabled, cdcdf_acm_regist...
 #include "cdcdf_acm_desc.h"    // for CDCD_ACM_DESCES_LS_FS
 #include "FreeRTOS.h"          // required for task.h, queue.h
@@ -46,7 +47,6 @@ struct usbd_descriptors single_desc[]
 uint8_t ctrl_buffer[64];
 QueueHandle_t stdinQueue = nullptr;
 QueueHandle_t stdoutQueue = nullptr;
-TaskHandle_t usbTaskHandle;
 bool usb_rts;
 uint8_t usb_recv_buffer[64];
 bool pending_read = false;
@@ -126,6 +126,7 @@ static void usb_task(void* ctxt)
     }
 }
 
+TaskHandle_t tasks::usb;
 void usb::init(void)
 {
     /* Set up USB clocking. */

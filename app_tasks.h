@@ -8,6 +8,7 @@ namespace tasks {
 extern TaskHandle_t lockControl;
 extern TaskHandle_t keypadScan;
 extern TaskHandle_t console;
+extern TaskHandle_t usb;
 }
 
 #endif /* APP_TASKS_H */
