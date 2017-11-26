@@ -54,8 +54,18 @@ void keypadControlTask(void *ctxt)
                 buffer[idx] = '\0';
             }
             xTimerStop(timeoutTimer, portMAX_DELAY);
-            if (!lock::tryUnlock(buffer)) {
-                beep(1000);
+            if (!lock::tryUnlock(buffer, /*lockout*/false)) {
+                /*
+                 * Beep angrily and ignore any keypad input for
+                 * the next 5 seconds.
+                 */
+                beep(100);
+                os_sleep(200);
+                beep(100);
+                os_sleep(5000);
+                xQueueReset(keypadQueue);
+            } else {
+                beep(2250);
             }
             memset(buffer, 0, 16);
             idx = 0;
