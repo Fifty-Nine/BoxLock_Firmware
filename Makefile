@@ -98,6 +98,7 @@ OBJS:= \
 	$(PERSISTENT_STORAGE_OBJS) \
 	$(USB_OBJS) \
 	$(RTOS_OBJS) \
+	managed_task.o \
 	nvmem.o \
 	usb.o \
 	linenoise.o \
