@@ -192,7 +192,7 @@
 // <o> bMaxPower <0x00-0xFF>
 // <id> usb_cdcd_acm_bmaxpower
 #ifndef CONF_USB_CDCD_ACM_BMAXPOWER
-#define CONF_USB_CDCD_ACM_BMAXPOWER 0x32
+#define CONF_USB_CDCD_ACM_BMAXPOWER (300/2)
 #endif
 // </h>
 
