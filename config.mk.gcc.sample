@@ -1,5 +1,9 @@
 # Path to the root directory of the Atmel XDK.
-ASF_INSTALL_PATH:=
+CMSIS_INSTALL_PATH:=
+
+# Path to the device family pack for the
+# target MCU.
+DFP_INSTALL_PATH:=
 
 # Path to the target system root directory.
 SYSROOT:=

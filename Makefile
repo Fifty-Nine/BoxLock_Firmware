@@ -10,9 +10,8 @@ include config.mk
 LINKER_SCRIPT:=samd21e18a_flash.ld
 COMMON_FLAGS+= \
 	-D__SAMD21E18A__ \
-	-I$(ASF_INSTALL_PATH)/thirdparty/CMSIS/Include \
-	-I$(ASF_INSTALL_PATH)/sam0/utils/cmsis/samd21/include \
-	-I$(ASF_INSTALL_PATH)/sam0/utils/cmsis/samd21/source \
+	-I$(CMSIS_INSTALL_PATH)/CMSIS/Core/Include \
+	-I$(DFP_INSTALL_PATH)/include \
 	-IRTOS \
 	-IRTOS/freertos/FreeRTOSV8.2.3 \
 	-IRTOS/freertos/FreeRTOSV8.2.3/Source/include \
@@ -40,7 +39,6 @@ COMMON_FLAGS+= \
 	-fshort-enums \
 	-DBOARD_REV=$(BOARD_REV) \
 
-
 CFLAGS+= \
 	$(COMMON_FLAGS) \
 	-std=gnu11 \
@@ -57,8 +55,8 @@ LDFLAGS+= \
 	-Wl,-gc-sections \
 
 CMSIS_OBJS:= \
-	$(ASF_INSTALL_PATH)/sam0/utils/cmsis/samd21/source/gcc/startup_samd21.o \
-	$(ASF_INSTALL_PATH)/sam0/utils/cmsis/samd21/source/system_samd21.o \
+	$(DFP_INSTALL_PATH)/gcc/gcc/startup_samd21.o \
+	$(DFP_INSTALL_PATH)/gcc/system_samd21.o \
 
 HPL_OBJS:= \
 	hpl/core/hpl_init.o \
