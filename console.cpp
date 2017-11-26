@@ -106,20 +106,32 @@ void setPinCmd(const char *args)
 }
 
 extern "C" void* sbrk(intptr_t);
+extern "C" char __sram_end__;
 
 void memoryStats(const char*)
 {
     auto info = mallinfo();
+
+    char* curr_sbrk = (char*)sbrk(0);
+    ptrdiff_t unused = &__sram_end__ - curr_sbrk;
+
+    ptrdiff_t unused_kb = (unused * 10) >> 10;
+    ptrdiff_t unused_tenth_kb = unused_kb % 10;
+    unused_kb /= 10;
+
     printf(
         "Heap:\n"
         "\t- heap size     = %#10x\n"
         "\t- in use blocks = %#10x\n"
         "\t- free blocks   = %#10x\n"
-        "\t- current sbrk  = %10p\n",
+        "\t- current sbrk  = %10p\n"
+        "\t- unused memory = %7d.%dK\n\n",
         info.arena,
         info.uordblks,
         info.fordblks,
-        sbrk(0)
+        curr_sbrk,
+        unused_kb,
+        unused_tenth_kb
     );
 
     printf(
@@ -129,7 +141,7 @@ void memoryStats(const char*)
         "\t- Console = %#8lx\n"
         "\t- USB     = %#8lx\n"
         "\t- Idle    = %#8lx\n"
-        "\t- Timer   = %#8lx\n",
+        "\t- Timer   = %#8lx\n\n",
         uxTaskGetStackHighWaterMark(tasks::keypadScan),
         uxTaskGetStackHighWaterMark(tasks::lockControl),
         uxTaskGetStackHighWaterMark(tasks::console),
