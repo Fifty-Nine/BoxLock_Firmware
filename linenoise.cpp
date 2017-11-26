@@ -825,6 +825,14 @@ static int linenoiseEdit(int stdin_fd, int stdout_fd, char *buf, size_t buflen, 
                         case '3': /* Delete key. */
                             linenoiseEditDelete(&l);
                             break;
+                        case '1': /* Home */
+                        case '7':
+                            linenoiseEditMoveHome(&l);
+                            break;
+                        case '4':
+                        case '8':
+                            linenoiseEditMoveEnd(&l);
+                            break;
                         }
                     }
                 } else {
