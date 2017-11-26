@@ -255,19 +255,24 @@ void consoleTask(void*)
 	}
 }
 
+StaticTask_t consoleTaskCtxt;
+StackType_t consoleTaskStack[0x600];
+
 } /* namespace */
 
 TaskHandle_t tasks::console = NULL;
 void console::startTask()
 {
     if (!tasks::console) {
-        xTaskCreate(
+        xTaskCreateStatic(
             &consoleTask,
             "Command Line",
-            2048,
+            sizeof(consoleTaskStack) / sizeof(StackType_t),
             NULL,
             tskIDLE_PRIORITY+1,
-            &tasks::console
+            &tasks::console,
+            consoleTaskStack,
+            &consoleTaskCtxt
         );
     }
 }
