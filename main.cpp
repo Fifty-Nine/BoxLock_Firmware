@@ -9,7 +9,7 @@
 
 int main(void)
 {
-    mtb::init(32);
+    mtb::init(256);
     mcu::init();
     nvmem::init();
     usb::init();

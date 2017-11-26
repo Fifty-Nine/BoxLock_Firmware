@@ -4,7 +4,7 @@
 namespace lock {
 void init(void);
 void unlock();
-bool tryUnlock(const char *pin);
+bool tryUnlock(const char *pin, bool lockout = true);
 void setPin(const char *pin);
 bool trySetPin(const char *oldPin, const char *newPin);
 } /* namespace lock */

@@ -5,6 +5,7 @@
 #include <task.h>
 
 namespace tasks {
+extern TaskHandle_t lockControl;
 extern TaskHandle_t keypadControl;
 extern TaskHandle_t keypadScan;
 extern TaskHandle_t console;
