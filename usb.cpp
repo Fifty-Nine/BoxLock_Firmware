@@ -121,7 +121,7 @@ static void usb_task(void* ctxt)
     }
 }
 
-void usb_init(void)
+void usb::init(void)
 {
     stdinQueue = xQueueCreate(64, sizeof(char));
     stdoutQueue = xQueueCreate(64, sizeof(char));
@@ -130,7 +130,7 @@ void usb_init(void)
     cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_line_state_changed);
 }
 
-int usb_read(char* buf, size_t count)
+int usb::read(char* buf, size_t count)
 {
     if (count == 0) {
         return 0;
@@ -145,7 +145,7 @@ int usb_read(char* buf, size_t count)
     return rc;
 }
 
-int usb_write(char *buf, size_t count)
+int usb::write(char *buf, size_t count)
 {
     if (!usb_rts) { return count; } 
     size_t rc = 0;

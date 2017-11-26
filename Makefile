@@ -99,7 +99,7 @@ OBJS:= \
 	$(USB_OBJS) \
 	$(RTOS_OBJS) \
 	driver_init.o \
-	persistent_storage_start.o \
+	nvmem.o \
 	usb.o \
 	linenoise.o \
 	utility.o \

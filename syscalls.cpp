@@ -10,7 +10,7 @@ int _read(int fd, const char *const buf, size_t count)
         errno = EBADF;
         return 0;
     }
-    return usb_read((char*)buf, count);
+    return usb::read((char*)buf, count);
 }
 
 extern "C"
@@ -20,7 +20,7 @@ int _write(int fd, const char *const buf, size_t count)
         errno = EBADF;
         return 0;
     }
-    return usb_write((char*)buf, count);
+    return usb::write((char*)buf, count);
 }
 
 extern "C"

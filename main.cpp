@@ -4,15 +4,15 @@
 #include "keypad.h"                    // for init
 #include "lock_control.h"              // for init
 #include "mtb.h"                       // for init
-#include "persistent_storage_start.h"  // for persistent_storage_init
+#include "nvmem.h"                     // for nvmem::init
 #include "usb.h"                       // for usb_init
 
 int main(void)
 {
     mtb::init(32);
     system_init();
-    persistent_storage_init();
-    usb_init();
+    nvmem::init();
+    usb::init();
     lock::init();
     keypad::init();
     
