@@ -126,6 +126,17 @@ static void usb_task(void* ctxt)
     }
 }
 
+namespace {
+
+StaticTask_t usbTaskCtxt;
+StackType_t usbStack[0xc0];
+StaticQueue_t stdinQueueCtxt;
+uint8_t stdinBuffer[64];
+StaticQueue_t stdoutQueueCtxt;
+uint8_t stdoutBuffer[64];
+
+}
+
 TaskHandle_t tasks::usb;
 void usb::init(void)
 {
@@ -152,9 +163,28 @@ void usb::init(void)
     cdc_device_acm_init();
 
     /* Set up monitoring task. */
-    stdinQueue = xQueueCreate(64, sizeof(char));
-    stdoutQueue = xQueueCreate(64, sizeof(char));
-    xTaskCreate(&usb_task, "USB Task", 256, NULL, tskIDLE_PRIORITY+1, &usbTaskHandle);
+    stdinQueue = xQueueCreateStatic(
+        sizeof(stdinBuffer),
+        sizeof(char),
+        stdinBuffer,
+        &stdinQueueCtxt
+    );
+    stdoutQueue = xQueueCreateStatic(
+        sizeof(stdoutBuffer),
+        sizeof(char),
+        stdoutBuffer,
+        &stdoutQueueCtxt
+    );
+    xTaskCreateStatic(
+        &usb_task,
+        "USB Task",
+        sizeof(usbStack) / sizeof(StackType_t),
+        nullptr,
+        tskIDLE_PRIORITY+1,
+        &tasks::usb,
+        usbStack,
+        &usbTaskCtxt
+    );
 
     /* Register callbacks. */
     cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_line_state_changed);
