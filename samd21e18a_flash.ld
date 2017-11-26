@@ -49,7 +49,8 @@ SEARCH_DIR(.)
 /* Memory Spaces Definitions */
 MEMORY
 {
-  rom      (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00040000
+  rom      (rx)  : ORIGIN = 0x00000000, LENGTH = 0x0003f000
+  eeprom   (rx)  : ORIGIN = 0x0003f000, LENGTH = 0x00001000
   ram      (rwx) : ORIGIN = 0x20000000, LENGTH = 0x00008000
   mtb      (rw)  : ORIGIN = 0x41006000, LENGTH = 0x1000
 }
@@ -120,6 +121,12 @@ SECTIONS
 
     . = ALIGN(4);
     _etext = .;
+
+    .nv_rom 0x3f000 (NOLOAD): {
+        __nv_rom__ = .;
+	. += 0x1000;
+	__nv_rom_end__ = .;
+    } > eeprom
     
     /* stack section */
     .stack (NOLOAD):
