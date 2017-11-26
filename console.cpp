@@ -16,10 +16,11 @@
 
 namespace {
 
+using command_fn = void (*const)(const char*);
 struct command_t
 {
     const char *name;
-    void (* const callback)(const char *);
+    command_fn callback;
     const char *documentation;
     const char *details;
     
@@ -59,6 +60,15 @@ struct command_t
 };
 
 void printHelp(const char *cmd);
+
+void unlockCmd(const char *args)
+{
+    if (lock::tryUnlock(args)) {
+        printf("Box unlocked.\n");
+    } else {
+        printf("Invalid pin.\n");
+    }
+}
 
 void setPinCmd(const char *args)
 {
@@ -127,17 +137,11 @@ void memoryStats(const char*)
     );
 }
 
-command_t commands[] = {
-    { "clear", [](const char *) { linenoiseClearScreen(); }, "\t\tClear the screen.", nullptr },
+command_t commands[] __attribute__((section(".rodata#"))) = {
+    { "clear", (command_fn)&linenoiseClearScreen, "\t\tClear the screen.", nullptr },
     {
         "unlock", 
-        [](const char *pin) {
-            if (lock::tryUnlock(pin)) {
-                printf("Box unlocked.\n");
-            } else {
-                printf("Invalid pin.\n");
-            }
-        },
+        &unlockCmd,
         "\tTry to unlock the box with the provided PIN.",
         nullptr
     },
@@ -152,7 +156,7 @@ command_t commands[] = {
     },
     {
        "reset",
-        [](const char*) { mcu::reset(); },
+       (command_fn)mcu::reset,
         "\t\tReset the MCU.",
         nullptr
     },
