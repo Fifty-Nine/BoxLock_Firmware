@@ -6,11 +6,10 @@
 #include "pins.h"
 #include "rtos_port.h"
 #include "utility.h"
-#include "nv_storage.h"
+#include "nvmem.h"
 
 namespace {
 
-constexpr uint16_t pin_storage_id = 1;
 char pin[16] = { '1', '2', '3', '4' };
 constexpr size_t lockout_wait_time = 5000;
 
@@ -30,9 +29,7 @@ bool checkPin(const char* guess)
 
 void lock::init()
 {
-    if (nv_storage_item_exists(pin_storage_id)) {
-        nv_storage_read(pin_storage_id, 0, (uint8_t*)&pin, 16);
-    } else {
+    if (!nvmem::read(nvmem::pin_id, &pin, 16)) {
         setPin("1234");
     }
 }
@@ -70,7 +67,7 @@ void lock::setPin(const char *newPin)
     for (size_t i = 0; i < 16 && newPin[i] != '\0'; ++i) {
         pin[i] = mapToPhoneKeypad(newPin[i]);
     }
-    nv_storage_write(pin_storage_id, 0, (uint8_t*)pin, 16);
+    nvmem::write(nvmem::pin_id, pin, 16);
 }
 
 bool lock::trySetPin(const char *oldPin, const char *newPin)
