@@ -27,6 +27,7 @@ void keypadTimeout(TimerHandle_t handle)
 }
 
 TimerHandle_t timeoutTimer;
+TimerHandle_t beepTimer;
 void lockControlTask(void *ctxt)
 {
     char buffer[16] = { 0 };
@@ -93,7 +94,12 @@ void keypadScanTask(void *ctxt)
                 if (held) {
                     xQueueSendToBack(keypadQueue, &c, 0);
                 }
-                } else if (pressed) {
+            } else if (pressed) {
+                if (!held) {
+                    if (xTimerReset(beepTimer, 0) == pdTRUE) {
+                        gpio_set_pin_level(BUZZER, true);
+                    }
+                }
                 previous[i][j] = true;
             }
         }
@@ -114,6 +120,7 @@ StackType_t keypadTaskStack[64];
 StaticQueue_t keypadQueueCtxt;
 uint8_t keypadQueueBuffer[16];
 StaticTimer_t timeoutTimerCtxt;
+StaticTimer_t beepTimerCtxt;
 
 } /* namespace */
 
@@ -148,6 +155,10 @@ void keypad::init()
     gpio_set_pin_pull_mode(KEYPADI3, GPIO_PULL_UP);
     gpio_set_pin_function(KEYPADI3, GPIO_PIN_FUNCTION_OFF);
 
+    gpio_set_pin_direction(BUZZER, GPIO_DIRECTION_OUT);
+    gpio_set_pin_level(BUZZER, false);
+    gpio_set_pin_function(BUZZER, GPIO_PIN_FUNCTION_OFF);
+
     /* Set up monitoring tasks. */
     keypadQueue = xQueueCreateStatic(
         16,
@@ -163,6 +174,15 @@ void keypad::init()
         keypadTimeout,
         &timeoutTimerCtxt
     );
+    beepTimer = xTimerCreateStatic(
+        "Beep timer",
+        200,
+        pdFALSE,
+        NULL,
+        [](TimerHandle_t) { gpio_set_pin_level(BUZZER, false); },
+        &beepTimerCtxt
+    );
+
     xTaskCreateStatic(
         &lockControlTask,
         "Lock Control",
