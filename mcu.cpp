@@ -21,3 +21,10 @@ void mcu::breakpoint()
     asm("BKPT #0");
 #endif
 }
+
+void mcu::assert(bool value)
+{
+    if (!value) {
+        breakpoint();
+    }
+}
