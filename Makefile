@@ -38,6 +38,7 @@ COMMON_FLAGS+= \
 	-mcpu=cortex-m0plus \
 	-ffunction-sections \
 	-fshort-enums \
+	-DBOARD_REV=$(BOARD_REV) \
 
 
 CFLAGS+= \

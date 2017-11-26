@@ -10,10 +10,34 @@
 #define GPIO_PIN_FUNCTION_G 6
 #define GPIO_PIN_FUNCTION_H 7
 
+#if BOARD_REV == 101
+
+#define BUZZER   GPIO(GPIO_PORTA,  0)
+#define BOOT_EN  GPIO(GPIO_PORTA, 15)
+#define SOL_TRIG GPIO(GPIO_PORTA,  3)
+#define CPU_PWM  GPIO(GPIO_PORTA,  4)
+#define PWM_EN   GPIO(GPIO_PORTA,  5)
+#define LED_OUT  GPIO(GPIO_PORTA,  8)
+#define KEYPADO0 GPIO(GPIO_PORTA, 14)
+#define KEYPADO1 GPIO(GPIO_PORTA, 16)
+#define KEYPADO2 GPIO(GPIO_PORTA, 17)
+#define KEYPADI0 GPIO(GPIO_PORTA, 18)
+#define KEYPADI1 GPIO(GPIO_PORTA, 19)
+#define KEYPADI2 GPIO(GPIO_PORTA, 22)
+#define KEYPADI3 GPIO(GPIO_PORTA, 23)
+#define PA24 GPIO(GPIO_PORTA, 24)
+#define PA25 GPIO(GPIO_PORTA, 25)
+
+#elif BOARD_REV == 100
+
+/* Rev 100 has no buzzer or boot pin. */
+#define BUZZER 0
+#define BOOT_EN 0
+
 #define SOL_TRIG GPIO(GPIO_PORTA, 3)
-#define CPU_PWM GPIO(GPIO_PORTA, 4)
-#define PWM_EN GPIO(GPIO_PORTA, 5)
-#define LED_OUT GPIO(GPIO_PORTA, 10)
+#define CPU_PWM  GPIO(GPIO_PORTA, 4)
+#define PWM_EN   GPIO(GPIO_PORTA, 5)
+#define LED_OUT  GPIO(GPIO_PORTA, 10)
 #define KEYPADO0 GPIO(GPIO_PORTA, 14)
 #define KEYPADO1 GPIO(GPIO_PORTA, 15)
 #define KEYPADO2 GPIO(GPIO_PORTA, 16)
@@ -23,5 +47,9 @@
 #define KEYPADI3 GPIO(GPIO_PORTA, 22)
 #define PA24 GPIO(GPIO_PORTA, 24)
 #define PA25 GPIO(GPIO_PORTA, 25)
+
+#else
+#error "Unrecognized or undefined board revision."
+#endif
 
 #endif /* PINS_H */

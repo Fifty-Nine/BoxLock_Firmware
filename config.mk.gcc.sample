@@ -4,6 +4,9 @@ ASF_INSTALL_PATH:=
 # Path to the target system root directory.
 SYSROOT:=
 
+# Board revision * 100
+BOARD_REV=101
+
 # Definitions of the various binaries used to build and
 # run the target.
 CC:=arm-unknown-eabi-gcc
