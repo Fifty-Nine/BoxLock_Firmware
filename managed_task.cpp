@@ -1,6 +1,15 @@
 #include "managed_task.h"
 #include "mcu.h"
 
+namespace {
+
+enum task_flags : uint8_t {
+    stoppedFlag =  0b01,
+    startedFlag = 0b10,
+};
+
+}
+
 tasks::managed_task::managed_task(
     const char *name,
     StackType_t *stack,
@@ -8,6 +17,10 @@ tasks::managed_task::managed_task(
     event_msg *queueBuffer,
     size_t queueSize,
     UBaseType_t priority) :
+    name { name },
+    taskStack { stack },
+    taskStackSize { stackSize },
+    priority { priority },
     queueHandle {
         xQueueCreateStatic(
             queueSize,
@@ -15,7 +28,8 @@ tasks::managed_task::managed_task(
             reinterpret_cast<uint8_t*>(queueBuffer),
             &queue
         )
-    }
+    },
+    flagsHandle { xEventGroupCreateStatic(&flags) }
 {
     auto rc = xTaskCreateStatic(
         [](void* c) { ((managed_task*)c)->run(); },
@@ -29,6 +43,7 @@ tasks::managed_task::managed_task(
     );
     mcu::assert(rc != pdFALSE);
     mcu::assert(queueHandle);
+    mcu::assert(flagsHandle);
 }
 
 bool tasks::managed_task::post(
@@ -48,9 +63,49 @@ TaskHandle_t tasks::managed_task::handle() const
     return taskHandle;
 }
 
+bool tasks::managed_task::running() const
+{
+    auto bits = xEventGroupGetBitsFromISR(flagsHandle);
+    return (bits & startedFlag) && !(bits & stoppedFlag);
+}
+
+bool tasks::managed_task::join(TickType_t timeout)
+{
+    if (timeout == 0) {
+        return (xEventGroupGetBitsFromISR(flagsHandle) & stoppedFlag) != 0;
+    }
+    return (xEventGroupWaitBits(
+        flagsHandle,
+        stoppedFlag,
+        pdFALSE,
+        pdTRUE,
+        timeout
+    ) & stoppedFlag) == stoppedFlag;
+}
+
+void tasks::managed_task::restart()
+{
+    mcu::assert(join(0) == true);
+    xQueueReset(queueHandle);
+    xEventGroupClearBits(flagsHandle, startedFlag | stoppedFlag);
+
+    auto rc = xTaskCreateStatic(
+        [](void* c) { ((managed_task*)c)->run(); },
+        name,
+        taskStackSize,
+        this,
+        priority,
+        &taskHandle,
+        taskStack,
+        &task
+    );
+    mcu::assert(rc != pdFALSE);
+}
+
 void tasks::managed_task::run()
 {
     startup();
+    xEventGroupSetBits(flagsHandle, startedFlag);
     while (true) {
         event_msg msg;
         if (xQueueReceive(queueHandle, (uint8_t*)&msg, portMAX_DELAY) == pdTRUE) {
@@ -63,5 +118,7 @@ void tasks::managed_task::run()
     }
 
     teardown();
+    xEventGroupSetBits(flagsHandle, stoppedFlag);
+    xEventGroupClearBits(flagsHandle, startedFlag);
     vTaskDelete(taskHandle);
 }

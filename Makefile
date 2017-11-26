@@ -89,6 +89,7 @@ RTOS_OBJS:= \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/portable/GCC/ARM_CM0/port.o \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/timers.o \
 	RTOS/freertos/FreeRTOSV8.2.3/Source/queue.o \
+	RTOS/freertos/FreeRTOSV8.2.3/Source/event_groups.o \
 
 OBJDIR?=objs
 OBJS:= \

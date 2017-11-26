@@ -2,6 +2,7 @@
 #define MANAGED_TASK_H
 
 #include <FreeRTOS.h>
+#include <event_groups.h>
 #include <queue.h>
 #include <task.h>
 
@@ -29,10 +30,14 @@ public:
         size_t queueSize,
         UBaseType_t priority = tskIDLE_PRIORITY + 1);
 
+    bool running() const;
     bool post(const event_msg& msg, TickType_t timeout = portMAX_DELAY);
     bool postFromISR(const event_msg& msg);
+    void stop();
+    void restart();
 
     TaskHandle_t handle() const;
+    bool join(TickType_t timeout = portMAX_DELAY);
 
 private:
     virtual void process(event_msg& msg) = 0;
@@ -40,10 +45,18 @@ private:
     virtual void teardown() { }
     void run();
 
+    const char *name;
+    StackType_t *taskStack;
+    size_t taskStackSize;
+    UBaseType_t priority;
+
     StaticTask_t task;
     StaticQueue_t queue;
+    StaticEventGroup_t flags;
+
     TaskHandle_t taskHandle;
     QueueHandle_t queueHandle;
+    EventGroupHandle_t flagsHandle;
 };
 
 } /* namespace tasks */
