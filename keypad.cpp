@@ -20,14 +20,22 @@ TaskHandle_t tasks::keypadScan;
 namespace {
 
 QueueHandle_t keypadQueue;
+TimerHandle_t timeoutTimer;
+TimerHandle_t beepTimer;
+
 void keypadTimeout(TimerHandle_t handle)
 {
     BaseType_t woken;
     xQueueSendToBackFromISR(keypadQueue, "!", &woken);
 }
 
-TimerHandle_t timeoutTimer;
-TimerHandle_t beepTimer;
+void beep(int ticks)
+{
+    if (xTimerChangePeriod(beepTimer, ticks, ticks)) {
+        gpio_set_pin_level(BUZZER, true);
+    }
+}
+
 void lockControlTask(void *ctxt)
 {
     char buffer[16] = { 0 };
@@ -36,27 +44,31 @@ void lockControlTask(void *ctxt)
     {
         char c;
         xQueueReceive(keypadQueue, &c, portMAX_DELAY);
-        
+
         if (c == '!') {
             memset(buffer, 0, 16);
             idx = 0;
-            continue;
+            beep(700);
         } else if (c == '#') {
             if (idx != 16) {
                 buffer[idx] = '\0';
             }
-            if (lock::tryUnlock(buffer)) {
-                memset(buffer, 0, 16);
-                idx = 0;
-                continue;
+            xTimerStop(timeoutTimer, portMAX_DELAY);
+            if (!lock::tryUnlock(buffer)) {
+                beep(1000);
             }
+            memset(buffer, 0, 16);
+            idx = 0;
         } else if (idx == 16) {
             memset(buffer, 0, 16);
             idx = 0;
-            continue;
+            xTimerStop(timeoutTimer, portMAX_DELAY);
+            beep(700);
+        } else {
+            buffer[idx++] = c;
+            xTimerReset(timeoutTimer, portMAX_DELAY);
+            beep(100);
         }
-        buffer[idx++] = c;
-        xTimerReset(timeoutTimer, portMAX_DELAY);
     }
 }
 
@@ -91,14 +103,9 @@ void keypadScanTask(void *ctxt)
             bool held = previous[i][j];
             if (!pressed) {
                 previous[i][j] = false;
-                if (held) {
-                    xQueueSendToBack(keypadQueue, &c, 0);
-                }
             } else if (pressed) {
                 if (!held) {
-                    if (xTimerReset(beepTimer, 0) == pdTRUE) {
-                        gpio_set_pin_level(BUZZER, true);
-                    }
+                    xQueueSendToBack(keypadQueue, &c, 0);
                 }
                 previous[i][j] = true;
             }
@@ -168,7 +175,7 @@ void keypad::init()
     );
     timeoutTimer = xTimerCreateStatic(
         "Keypad Delay Timer",
-        1000,
+        2000,
         pdFALSE,
         NULL,
         keypadTimeout,
