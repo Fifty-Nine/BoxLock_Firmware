@@ -8,6 +8,9 @@ int _read(int fd, const char *const buf, size_t count)
 {
     if (fd != 0) {
         errno = EBADF;
+        return -1;
+    }
+    if (count == 0) {
         return 0;
     }
     return usb::read((char*)buf, count);
@@ -18,6 +21,9 @@ int _write(int fd, const char *const buf, size_t count)
 {
     if (fd != 1 && fd != 2) {
         errno = EBADF;
+        return -1;
+    }
+    if (count == 0) {
         return 0;
     }
     return usb::write((char*)buf, count);
