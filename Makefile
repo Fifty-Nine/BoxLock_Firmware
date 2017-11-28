@@ -47,6 +47,7 @@ CXXFLAGS+= \
 	$(COMMON_FLAGS) \
 	-std=gnu++14 \
 	-fno-exceptions \
+	-fno-unwind-tables \
 	-fno-rtti \
 
 LDFLAGS+= \
@@ -136,7 +137,7 @@ clean:
 firmware.elf: $(OBJDIR_OBJS) $(LINKER_SCRIPT)
 	$(LD) -Wl,-Map="firmware.map" -o $@ $(LDFLAGS) $(OBJDIR_OBJS)
 
-upload:
+$(OBJDIR)/uploaded: firmware.elf
 	$(GDB) \
 		-batch \
 		-ex 'target extended-remote localhost:3333' \
@@ -145,6 +146,9 @@ upload:
 		-ex 'load' \
 		-ex 'monitor reset halt' \
 		firmware.elf
+	touch $@
 
-debug:
+upload: $(OBJDIR)/uploaded
+
+debug: upload
 	$(GDB) -ex 'target extended-remote localhost:3333' firmware.elf
