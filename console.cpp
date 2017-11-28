@@ -113,7 +113,7 @@ extern "C" intptr_t __sram_end__;
 
 void memoryStats(const char*)
 {
-    auto info = mallinfo();
+    static auto info = mallinfo();
 
     char* curr_sbrk = (char*)sbrk(0);
     ptrdiff_t unused = (char*)&__sram_end__ - curr_sbrk;
@@ -281,7 +281,7 @@ void consoleTask(void*)
 }
 
 StaticTask_t consoleTaskCtxt;
-StackType_t consoleTaskStack[0x600];
+StackType_t consoleTaskStack[0xf0];
 
 } /* namespace */
 
