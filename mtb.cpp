@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <cstring>
 
-#include "mcu.h"
+#include "debug.h"
 
 struct mtb::registers_t mtb::regs __attribute__((section(".mtb")));
 
@@ -13,15 +13,15 @@ static intptr_t *mtb_buffer;
 
 void mtb::init(size_t buffer_size)
 {
-    mcu::assert(!mtb_buffer);
-    mcu::assert(__builtin_popcount(buffer_size) == 1 && buffer_size >= 16);
+    debug::assert(!mtb_buffer);
+    debug::assert(__builtin_popcount(buffer_size) == 1 && buffer_size >= 16);
     mtb_buffer = (intptr_t*)memalign(
         buffer_size, buffer_size * sizeof(intptr_t)
     );
-    mcu::assert(mtb_buffer);
+    debug::assert(mtb_buffer);
 
     uint8_t mask = __builtin_ctz(buffer_size) - 4;
-    mcu::assert(mask <= 0x1f);
+    debug::assert(mask <= 0x1f);
 
     intptr_t buffer_address = (intptr_t)mtb_buffer;
     memset(mtb_buffer, 0, buffer_size * sizeof(intptr_t));

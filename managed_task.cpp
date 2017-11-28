@@ -1,5 +1,6 @@
 #include "managed_task.h"
-#include "mcu.h"
+
+#include "debug.h"
 
 namespace {
 
@@ -41,9 +42,9 @@ tasks::managed_task::managed_task(
         stack,
         &task
     );
-    mcu::assert(rc != pdFALSE);
-    mcu::assert(queueHandle);
-    mcu::assert(flagsHandle);
+    debug::assert(rc != pdFALSE);
+    debug::assert(queueHandle);
+    debug::assert(flagsHandle);
 }
 
 bool tasks::managed_task::post(
@@ -85,7 +86,7 @@ bool tasks::managed_task::join(TickType_t timeout)
 
 void tasks::managed_task::restart()
 {
-    mcu::assert(join(0) == true);
+    debug::assert(join(0) == true);
     xQueueReset(queueHandle);
     xEventGroupClearBits(flagsHandle, startedFlag | stoppedFlag);
 
@@ -99,7 +100,7 @@ void tasks::managed_task::restart()
         taskStack,
         &task
     );
-    mcu::assert(rc != pdFALSE);
+    debug::assert(rc != pdFALSE);
 }
 
 void tasks::managed_task::run()

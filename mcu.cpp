@@ -15,16 +15,3 @@ void mcu::reset()
     while (1) {}
 }
 
-void mcu::breakpoint()
-{
-#ifndef NDEBUG
-    asm("BKPT #0");
-#endif
-}
-
-void mcu::assert(bool value)
-{
-    if (!value) {
-        breakpoint();
-    }
-}

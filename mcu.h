@@ -5,8 +5,12 @@ namespace mcu {
 
 void init();
 void reset() __attribute__((noreturn));
-void breakpoint();
-void assert(bool value);
+inline void breakpoint()
+{
+#ifndef NDEBUG
+    asm volatile("BKPT #0");
+#endif
+}
 
 } /* namespace mcu */
 
