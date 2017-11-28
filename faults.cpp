@@ -4,19 +4,6 @@
 #include "mcu.h"       // for breakpoint, reset
 #include "pins.h"      // for LED_OUT
 
-static inline void errorBlink()
-{
-    bool v = true;
-
-    while (1) {
-        gpio_set_pin_level(LED_OUT, v = !v);
-        int c = 0x80000;
-        while (--c > 0) {
-            asm("");
-        }
-    }
-}
-
 extern "C"
 void HardFault_Handler()
 {
