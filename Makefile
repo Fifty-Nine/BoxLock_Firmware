@@ -13,9 +13,8 @@ COMMON_FLAGS+= \
 	-I$(CMSIS_INSTALL_PATH)/CMSIS/Core/Include \
 	-I$(DFP_INSTALL_PATH)/include \
 	-IRTOS \
-	-IRTOS/freertos/FreeRTOSV8.2.3 \
-	-IRTOS/freertos/FreeRTOSV8.2.3/Source/include \
-	-IRTOS/freertos/FreeRTOSV8.2.3/Source/portable/GCC/ARM_CM0 \
+	-I$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/include \
+	-I$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/portable/GCC/ARM_CM0 \
 	-Ipersistent_storage \
 	-Iusb/ \
 	-Iusb/device \
@@ -84,12 +83,12 @@ USB_OBJS:= \
 	usb/device/usbdc.o \
 
 RTOS_OBJS:= \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/tasks.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/list.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/portable/GCC/ARM_CM0/port.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/timers.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/queue.o \
-	RTOS/freertos/FreeRTOSV8.2.3/Source/event_groups.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/tasks.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/list.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/portable/GCC/ARM_CM0/port.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/timers.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/queue.o \
+	$(FREERTOS_INSTALL_PATH)/FreeRTOS/Source/event_groups.o \
 
 OBJDIR?=objs
 OBJS:= \

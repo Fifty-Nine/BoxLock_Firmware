@@ -11,7 +11,6 @@
 #include "pins.h"          // for KEYPADI0, KEYPADI1, KEYPADI2, KEYPADI3
 #include "portmacro.h"     // for StackType_t, TickType_t, portMAX_DELAY
 #include "projdefs.h"      // for pdFALSE
-#include "rtos_port.h"     // for os_sleep
 #include "task.h"          // for xTaskCreateStatic, TaskHandle_t, tskIDLE_P...
 
 TaskHandle_t tasks::keypadControl;
@@ -60,9 +59,9 @@ void keypadControlTask(void *ctxt)
                  * the next 5 seconds.
                  */
                 beep(100);
-                os_sleep(200);
+                vTaskDelay(200);
                 beep(100);
-                os_sleep(5000);
+                vTaskDelay(5000);
                 xQueueReset(keypadQueue);
             } else {
                 beep(2250);
@@ -126,7 +125,7 @@ void keypadScanTask(void *ctxt)
         j = (j + 1) % nColumns;
         gpio_set_pin_direction(columns[j], GPIO_DIRECTION_OUT);
         gpio_set_pin_level(columns[j], false);
-        os_sleep(5);
+        vTaskDelay(5);
     }
 }
 
@@ -200,23 +199,21 @@ void keypad::init()
         &beepTimerCtxt
     );
 
-    xTaskCreateStatic(
+    tasks::keypadControl = xTaskCreateStatic(
         &keypadControlTask,
         "Keypad Control",
         sizeof(lockTaskStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY + 1,
-        &tasks::keypadControl,
         lockTaskStack,
         &lockTaskCtxt
     );
-    xTaskCreateStatic(
+    tasks::keypadScan = xTaskCreateStatic(
         &keypadScanTask,
         "Keypad Scanner",
         sizeof(keypadTaskStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY + 1,
-        &tasks::keypadScan,
         keypadTaskStack,
         &keypadTaskCtxt
     );

@@ -30,19 +30,18 @@ tasks::managed_task::managed_task(
             &queue
         )
     },
-    flagsHandle { xEventGroupCreateStatic(&flags) }
-{
-    auto rc = xTaskCreateStatic(
+    flagsHandle { xEventGroupCreateStatic(&flags) },
+    taskHandle { xTaskCreateStatic(
         [](void* c) { ((managed_task*)c)->run(); },
         name,
         stackSize,
         this,
         priority,
-        &taskHandle,
         stack,
-        &task
-    );
-    debug::assert(rc != pdFALSE);
+        &task)
+    }
+{
+    debug::assert(taskHandle);
     debug::assert(queueHandle);
     debug::assert(flagsHandle);
 }
@@ -90,17 +89,16 @@ void tasks::managed_task::restart()
     xQueueReset(queueHandle);
     xEventGroupClearBits(flagsHandle, startedFlag | stoppedFlag);
 
-    auto rc = xTaskCreateStatic(
+    taskHandle = xTaskCreateStatic(
         [](void* c) { ((managed_task*)c)->run(); },
         name,
         taskStackSize,
         this,
         priority,
-        &taskHandle,
         taskStack,
         &task
     );
-    debug::assert(rc != pdFALSE);
+    debug::assert(taskHandle);
 }
 
 void tasks::managed_task::run()

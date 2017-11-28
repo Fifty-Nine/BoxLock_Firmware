@@ -4,7 +4,6 @@
 #include "lock_control.h"
 #include "hal_gpio.h"
 #include "pins.h"
-#include "rtos_port.h"
 #include "utility.h"
 #include "nvmem.h"
 #include "app_tasks.h"
@@ -48,11 +47,11 @@ private:
             
             gpio_set_pin_level(LED_OUT, true);
             gpio_set_pin_level(PWM_EN, true);
-            os_sleep(charge_time);
+            vTaskDelay(charge_time);
             gpio_set_pin_level(SOL_TRIG, true);
-            os_sleep(drive_time);
+            vTaskDelay(drive_time);
             gpio_set_pin_level(PWM_EN, false);
-            os_sleep(hold_time);
+            vTaskDelay(hold_time);
             gpio_set_pin_level(SOL_TRIG, false);
             gpio_set_pin_level(LED_OUT, false);
         }
@@ -107,7 +106,7 @@ bool lock::tryUnlock(const char *guess, bool lockout)
         unlock();
         return true;
     } else if (lockout) {
-        os_sleep(lockout_wait_time);
+        vTaskDelay(lockout_wait_time);
     }
     return false;
 }
@@ -126,7 +125,7 @@ bool lock::trySetPin(const char *oldPin, const char *newPin)
         setPin(newPin);
         return true;
     } else {
-        os_sleep(lockout_wait_time);
+        vTaskDelay(lockout_wait_time);
     }
     return false;
 }

@@ -5,6 +5,9 @@ CMSIS_INSTALL_PATH:=
 # target MCU.
 DFP_INSTALL_PATH:=
 
+# Path to the FreeRTOS source.
+FREERTOS_INSTALL_PATH:=
+
 # Path to the target system root directory.
 SYSROOT:=
 

@@ -1,12 +1,15 @@
 #include "console.h"
+
 #include <malloc.h>        // for mallinfo
 #include <cctype>          // for isspace
 #include <cstdio>          // for printf, NULL, size_t
 #include <cstdint>         // for intptr_t
 #include <cstdlib>         // for free
 #include <string>          // for string
+
 #include "FreeRTOS.h"      // for StaticTask_t
 #include "app_tasks.h"     // for console, keypadScan, lockControl
+#include "debug.h"         // for debug::assert
 #include "linenoise.h"     // for linenoiseClearScreen, linenoise, linenoise...
 #include "lock_control.h"  // for tryUnlock, trySetPin
 #include "mcu.h"           // for reset
@@ -286,16 +289,16 @@ TaskHandle_t tasks::console = NULL;
 void console::startTask()
 {
     if (!tasks::console) {
-        xTaskCreateStatic(
+        tasks::console = xTaskCreateStatic(
             &consoleTask,
             "Command Line",
             sizeof(consoleTaskStack) / sizeof(StackType_t),
             NULL,
             tskIDLE_PRIORITY+1,
-            &tasks::console,
             consoleTaskStack,
             &consoleTaskCtxt
         );
+        debug::assert(tasks::console);
     }
 }
 

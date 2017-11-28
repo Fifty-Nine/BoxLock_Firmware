@@ -9,6 +9,7 @@
 #include "app_tasks.h"         // for tasks::usb
 #include "cdcdf_acm.h"         // for cdcdf_acm_is_enabled, cdcdf_acm_regist...
 #include "cdcdf_acm_desc.h"    // for CDCD_ACM_DESCES_LS_FS
+#include "debug.h"             // for debug::assert
 #include "FreeRTOS.h"          // required for task.h, queue.h
 #include "console.h"           // for startTask, stopTask
 #include "portmacro.h"         // for TickType_t, portMAX_DELAY, BaseType_t
@@ -175,16 +176,16 @@ void usb::init(void)
         stdoutBuffer,
         &stdoutQueueCtxt
     );
-    xTaskCreateStatic(
+    tasks::usb = xTaskCreateStatic(
         &usb_task,
         "USB Task",
         sizeof(usbStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY+1,
-        &tasks::usb,
         usbStack,
         &usbTaskCtxt
     );
+    debug::assert(tasks::usb);
 
     /* Register callbacks. */
     cdcdf_acm_register_callback(CDCDF_ACM_CB_STATE_C, (FUNC_PTR)usb_line_state_changed);

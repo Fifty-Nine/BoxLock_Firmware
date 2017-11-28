@@ -54,9 +54,9 @@ private:
     StaticQueue_t queue;
     StaticEventGroup_t flags;
 
-    TaskHandle_t taskHandle;
     QueueHandle_t queueHandle;
     EventGroupHandle_t flagsHandle;
+    TaskHandle_t taskHandle;
 };
 
 } /* namespace tasks */
