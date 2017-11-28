@@ -137,23 +137,22 @@ void memoryStats(const char*)
         unused_tenth_kb
     );
 
-    printf(
-        "Task stacks:\n"
-        "\t- Keypad (Scan)    = %#8lx\n"
-        "\t- Keypad (Control) = %#8lx\n"
-        "\t- Lock             = %#8lx\n"
-        "\t- Console          = %#8lx\n"
-        "\t- USB              = %#8lx\n"
-        "\t- Idle             = %#8lx\n"
-        "\t- Timer            = %#8lx\n\n",
-        uxTaskGetStackHighWaterMark(tasks::keypadScan),
-        uxTaskGetStackHighWaterMark(tasks::keypadControl),
-        uxTaskGetStackHighWaterMark(tasks::lockControl),
-        uxTaskGetStackHighWaterMark(tasks::console),
-        uxTaskGetStackHighWaterMark(tasks::usb),
-        uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle()),
-        uxTaskGetStackHighWaterMark(xTimerGetTimerDaemonTaskHandle())
-    );
+    printf("Task stacks:\n");
+
+    auto hwm = uxTaskGetStackHighWaterMark(tasks::keypadScan);
+    printf("\t- Keypad (Scan)    = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(tasks::keypadControl);
+    printf("\t- Keypad (Control) = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(tasks::lockControl);
+    printf("\t- Lock             = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(tasks::console);
+    printf("\t- Console          = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(tasks::usb);
+    printf("\t- USB              = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(xTaskGetIdleTaskHandle());
+    printf("\t- Idle             = %#8lx %8ld\n", hwm, hwm);
+    hwm = uxTaskGetStackHighWaterMark(xTimerGetTimerDaemonTaskHandle());
+    printf("\t- Timer            = %#8lx %8ld\n\n", hwm, hwm);
 }
 
 command_t commands[] __attribute__((section(".rodata#"))) = {
