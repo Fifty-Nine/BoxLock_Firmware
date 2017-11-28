@@ -72,7 +72,7 @@ bool checkPin(const char* guess)
         }
     }
     
-    return guess[i] == pin[i];
+    return (i == 16) || (guess[i] == pin[i]);
 }
 
 } /* namespace */
