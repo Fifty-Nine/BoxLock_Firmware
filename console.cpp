@@ -106,14 +106,14 @@ void setPinCmd(const char *args)
 }
 
 extern "C" void* sbrk(intptr_t);
-extern "C" char __sram_end__;
+extern "C" intptr_t __sram_end__;
 
 void memoryStats(const char*)
 {
     auto info = mallinfo();
 
     char* curr_sbrk = (char*)sbrk(0);
-    ptrdiff_t unused = &__sram_end__ - curr_sbrk;
+    ptrdiff_t unused = (char*)&__sram_end__ - curr_sbrk;
 
     ptrdiff_t unused_kb = (unused * 10) >> 10;
     ptrdiff_t unused_tenth_kb = unused_kb % 10;
