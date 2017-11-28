@@ -20,7 +20,7 @@ public:
         uint8_t cmd;
         uint8_t data[15];
     } __attribute__((packed));
-    static_assert(sizeof(event_msg) == 16);
+    static_assert(sizeof(event_msg) == 16, "");
 
     managed_task(
         const char *name,
