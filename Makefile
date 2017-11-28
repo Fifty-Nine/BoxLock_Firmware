@@ -113,6 +113,7 @@ OBJS:= \
 	syscalls.o \
 	rtos_support.o \
 	mcu.o \
+	sleep.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)

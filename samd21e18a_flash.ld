@@ -156,6 +156,7 @@ SECTIONS
         *(.bss .bss.*)
         . = ALIGN(4);
         _ezero = .;
+        *(.noinit .noinit.*)
     } > ram
 
     .heap (NOLOAD):

@@ -5,16 +5,19 @@
 #include "mcu.h"                       // for mcu::init
 #include "mtb.h"                       // for mtb::init
 #include "nvmem.h"                     // for nvmem::init
+#include "sleep.h"                     // for sleep::maybeSleep
 #include "usb.h"                       // for usb_init
 
 int main(void)
 {
     mtb::init(256);
     mcu::init();
+    sleep::maybeSleep();
     nvmem::init();
     usb::init();
     lock::init();
     keypad::init();
+    sleep::resetTimer();
     
     vTaskStartScheduler();
 }

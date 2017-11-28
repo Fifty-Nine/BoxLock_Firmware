@@ -12,6 +12,17 @@ inline void breakpoint()
 #endif
 }
 
+enum class reset_reason {
+    Unknown,
+    PowerOn,
+    BrownOut12,
+    BrownOut33,
+    External,
+    Watchdog,
+    System
+};
+reset_reason getResetReason();
+
 } /* namespace mcu */
 
 #endif /* MCU_H */

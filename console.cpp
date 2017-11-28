@@ -14,6 +14,7 @@
 #include "lock_control.h"  // for tryUnlock, trySetPin
 #include "mcu.h"           // for reset
 #include "portmacro.h"     // for StackType_t
+#include "sleep.h"         // for sleep::enterSleep
 #include "task.h"          // for uxTaskGetStackHighWaterMark, vTaskDelete
 #include "timers.h"        // for xTimerGetTimerDaemonTaskHandle
 
@@ -176,6 +177,12 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
        "reset",
        (command_fn)mcu::reset,
         "\t\tReset the MCU.",
+        nullptr
+    },
+    {
+        "sleep",
+        (command_fn)sleep::enterSleep,
+        "\t\tPut the MCU to sleep. This will end the terminal session.",
         nullptr
     },
     {
