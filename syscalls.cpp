@@ -47,13 +47,12 @@ void* _sbrk(intptr_t increment)
 {
     static intptr_t *curr_end = &__heap_end__;
     intptr_t *prev_end = curr_end;
-    intptr_t *new_end = curr_end;
 
     auto mod = increment % sizeof(intptr_t);
     increment /= 4;
     increment += mod ? 1 : 0;
 
-    new_end = curr_end + increment;
+    intptr_t *new_end = curr_end + increment;
 
     if (new_end > &__sram_end__) {
         errno = ENOMEM;
