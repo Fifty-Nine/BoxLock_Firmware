@@ -15,30 +15,13 @@ bool sleepMode __attribute__((section(".noinit")));
  */
 void initSleepClocking()
 {
-    /* Reset the GCLK to its initial state. */
-    GCLK->CTRL.bit.SWRST = 1;
-    while (GCLK->STATUS.bit.SYNCBUSY) { }
-
-    /* Use an x1 prescale. */
-    GCLK->GENDIV.reg = GCLK_GENDIV_ID(1);
-    while (GCLK->STATUS.bit.SYNCBUSY) { }
-
     /*
-     * Route the 32kHz low-power oscillator to
-     * clock generator 1.
-     */
-    GCLK->GENCTRL.reg =
-        GCLK_GENCTRL_ID(1) |
-        GCLK_GENCTRL_SRC_OSCULP32K |
-        GCLK_GENCTRL_GENEN;
-    while (GCLK->STATUS.bit.SYNCBUSY) { }
-
-    /*
-     * Route clock generator 1 to the EIC.
+     * After a reset, clock generator 2 is clocked by the
+     * 32kHz low-power oscillator, so use that.
      */
     GCLK->CLKCTRL.reg =
         GCLK_CLKCTRL_ID_EIC |
-        GCLK_CLKCTRL_GEN_GCLK1 |
+        GCLK_CLKCTRL_GEN_GCLK2 |
         GCLK_CLKCTRL_CLKEN;
     
     while (GCLK->STATUS.bit.SYNCBUSY) { }
@@ -47,6 +30,9 @@ void initSleepClocking()
     PM->APBAMASK.bit.GCLK_ = 1;
     PM->APBAMASK.bit.EIC_ = 1;
     PM->APBASEL.bit.APBADIV = 0;
+
+    PM->SLEEP.reg = PM_SLEEP_IDLE_APB;
+    SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
 }
 
 /*
@@ -98,8 +84,14 @@ void sleep::maybeSleep()
     gpio_set_pin_function(KEYPADI0, GPIO_PIN_FUNCTION_A);
 
     initKeypadInterrupt();
-    while (1) {
-    }
+    asm("wfi");
+
+    /*
+     * In most cases we'll never get here, but invoke reset here just in case
+     * to avoid a lockup because the clock configuration above would cause the
+     * main application to lock up.
+     */
+    mcu::reset();
 }
 
 void sleep::enterSleep()
