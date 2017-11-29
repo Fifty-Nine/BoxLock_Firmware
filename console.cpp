@@ -277,6 +277,8 @@ void consoleTask(void*)
     printBanner();
     while (1) {
         char *c = linenoise("root@thebox:~> ");
+
+        sleep::resetTimer();
         
         if (c && c[0] && !parseCommand(c)) {
             printf("Unknown command: %s\n", c);

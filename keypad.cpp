@@ -11,6 +11,7 @@
 #include "pins.h"          // for KEYPADI0, KEYPADI1, KEYPADI2, KEYPADI3
 #include "portmacro.h"     // for StackType_t, TickType_t, portMAX_DELAY
 #include "projdefs.h"      // for pdFALSE
+#include "sleep.h"         // for sleep::resetTimer
 #include "task.h"          // for xTaskCreateStatic, TaskHandle_t, tskIDLE_P...
 
 TaskHandle_t tasks::keypadControl;
@@ -54,6 +55,7 @@ void keypadControlTask(void *ctxt)
                 buffer[idx] = '\0';
             }
             xTimerStop(timeoutTimer, portMAX_DELAY);
+            sleep::resetTimer();
             if (!lock::tryUnlock(buffer, /*lockout*/false)) {
                 /*
                  * Beep angrily and ignore any keypad input for
@@ -71,15 +73,18 @@ void keypadControlTask(void *ctxt)
             idx = 0;
         } else if (c == '*') {
             beep(100);
+            sleep::resetTimer();
         } else if (idx == 16) {
             memset(buffer, 0, 16);
             idx = 0;
-            xTimerStop(timeoutTimer, portMAX_DELAY);
             beep(700);
+            xTimerStop(timeoutTimer, portMAX_DELAY);
+            sleep::resetTimer();
         } else {
             buffer[idx++] = c;
-            xTimerReset(timeoutTimer, portMAX_DELAY);
             beep(100);
+            xTimerReset(timeoutTimer, portMAX_DELAY);
+            sleep::resetTimer();
         }
     }
 }
