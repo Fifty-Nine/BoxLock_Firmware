@@ -39,6 +39,7 @@ void keypadControlTask(void *ctxt)
 {
     char buffer[16] = { 0 };
     size_t idx = 0;
+    beep(100);
     while (1)
     {
         char c;
@@ -68,6 +69,8 @@ void keypadControlTask(void *ctxt)
             }
             memset(buffer, 0, 16);
             idx = 0;
+        } else if (c == '*') {
+            beep(100);
         } else if (idx == 16) {
             memset(buffer, 0, 16);
             idx = 0;

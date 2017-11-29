@@ -22,6 +22,13 @@ enum class reset_reason {
     System
 };
 reset_reason getResetReason();
+inline void enableInterrupts() {
+    asm volatile("cpsie i" : : : "memory");
+}
+
+inline void disableInterrupts() {
+    asm volatile("cpsid i" : : : "memory");
+}
 
 } /* namespace mcu */
 

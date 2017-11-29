@@ -11,8 +11,8 @@
 int main(void)
 {
     mtb::init(256);
-    mcu::init();
     sleep::maybeSleep();
+    mcu::init();
     nvmem::init();
     usb::init();
     lock::init();
