@@ -137,10 +137,10 @@ void keypadScanTask(void *ctxt)
     }
 }
 
-StaticTask_t lockTaskCtxt;
-StackType_t lockTaskStack[64];
-StaticTask_t keypadTaskCtxt;
-StackType_t keypadTaskStack[64];
+StaticTask_t keypadCtrlTaskCtxt;
+StackType_t keypadCtrlTaskStack[64];
+StaticTask_t keypadScanTaskCtxt;
+StackType_t keypadScanTaskStack[64];
 StaticQueue_t keypadQueueCtxt;
 uint8_t keypadQueueBuffer[16];
 StaticTimer_t timeoutTimerCtxt;
@@ -210,20 +210,20 @@ void keypad::init()
     tasks::keypadControl = xTaskCreateStatic(
         &keypadControlTask,
         "Keypad Control",
-        sizeof(lockTaskStack) / sizeof(StackType_t),
+        sizeof(keypadCtrlTaskStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY + 1,
-        lockTaskStack,
-        &lockTaskCtxt
+        keypadCtrlTaskStack,
+        &keypadCtrlTaskCtxt
     );
     tasks::keypadScan = xTaskCreateStatic(
         &keypadScanTask,
         "Keypad Scanner",
-        sizeof(keypadTaskStack) / sizeof(StackType_t),
+        sizeof(keypadScanTaskStack) / sizeof(StackType_t),
         nullptr,
         tskIDLE_PRIORITY + 1,
-        keypadTaskStack,
-        &keypadTaskCtxt
+        keypadScanTaskStack,
+        &keypadScanTaskCtxt
     );
 
 }
