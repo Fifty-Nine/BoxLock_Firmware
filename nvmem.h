@@ -11,7 +11,8 @@ void init(void);
 enum ids : uint16_t
 {
     invalid = 0,
-    pin_id
+    pin_id,
+    solenoid_params_id,
 };
 
 bool read(ids id, void* data, size_t size);

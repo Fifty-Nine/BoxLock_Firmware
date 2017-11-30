@@ -114,6 +114,7 @@ OBJS:= \
 	rtos_support.o \
 	mcu.o \
 	sleep.o \
+	solenoid-params.o \
 	main.o
 
 OBJDIR_OBJS:=$(OBJS:%.o=$(OBJDIR)/%.o)

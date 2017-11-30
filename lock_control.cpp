@@ -1,13 +1,14 @@
 #include <cstdio>
 #include <cstring>
 
-#include "lock_control.h"
-#include "hal_gpio.h"
-#include "pins.h"
-#include "utility.h"
-#include "nvmem.h"
 #include "app_tasks.h"
+#include "hal_gpio.h"
+#include "lock_control.h"
 #include "managed_task.h"
+#include "nvmem.h"
+#include "pins.h"
+#include "solenoid-params.h"
+#include "utility.h"
 
 TaskHandle_t tasks::lockControl = nullptr;
 namespace {
@@ -41,23 +42,20 @@ private:
     void process(event_msg& msg) override
     {
         if (msg.cmd == CMD_Unlock) {
-            constexpr int charge_time = 200;
-            constexpr int drive_time = 50;
-            constexpr int hold_time = 2000;
-            
+            auto params = solenoid::getParams();
             gpio_set_pin_level(LED_OUT, true);
             gpio_set_pin_level(PWM_EN, true);
-            vTaskDelay(charge_time);
+            vTaskDelay(params.charge_time);
             gpio_set_pin_level(SOL_TRIG, true);
-            vTaskDelay(drive_time);
+            vTaskDelay(params.drive_time);
             gpio_set_pin_level(PWM_EN, false);
-            vTaskDelay(hold_time);
+            vTaskDelay(params.hold_time);
             gpio_set_pin_level(SOL_TRIG, false);
             gpio_set_pin_level(LED_OUT, false);
         }
     }
 
-    StackType_t stack[64];
+    StackType_t stack[0x80];
     event_msg msgQueue[2];
 } controller;
 
