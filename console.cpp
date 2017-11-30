@@ -15,6 +15,7 @@
 #include "mcu.h"           // for reset
 #include "portmacro.h"     // for StackType_t
 #include "sleep.h"         // for sleep::enterSleep
+#include "solenoid-params.h" // for solenoid::params
 #include "task.h"          // for uxTaskGetStackHighWaterMark, vTaskDelete
 #include "timers.h"        // for xTimerGetTimerDaemonTaskHandle
 
@@ -63,6 +64,34 @@ struct command_t
     }
 };
 
+unsigned splitArgs(char *buffer, char **args, unsigned max)
+{
+    char *c = buffer;
+    unsigned rc = 0;
+    while (1) {
+        /* Skip leading whitespace. */
+        while (*c != '\0' && std::isspace(*c)) { ++c; }
+
+        char *begin = c;
+        while (*c != '\0' && !std::isspace(*c)) { ++c; }
+
+        if (c == begin) {
+            return rc;
+        }
+
+        if (rc < max) {
+            args[rc] = begin;
+
+            if (*c != '\0') {
+                *c++ = '\0';
+            } else {
+                return ++rc;
+            }
+        }
+        rc++;
+    }
+}
+
 void printHelp(const char *cmd);
 
 void unlockCmd(char *args)
@@ -106,6 +135,53 @@ void setPinCmd(char *args)
         printf("New PIN successfully set.\n");
     } else {
         printf("Invalid PIN.\n");
+    }
+}
+
+void paramCmd(char *args)
+{
+    static char *argv[2];
+    unsigned argc = splitArgs(args, argv, 2);
+
+    if (argc > 2) {
+        printf("Too many arguments.\n");
+        return;
+    }
+
+    auto p = solenoid::getParams();
+    if (argc == 0) {
+        printf("chargetime: %4d\n", p.charge_time);
+        printf("drivetime:  %4d\n", p.drive_time);
+        printf("holdtime:   %4d\n", p.hold_time);
+        return;
+    }
+
+    std::string name = argv[0];
+    unsigned *param =
+        name == "chargetime" ? &p.charge_time :
+        name == "drivetime"  ? &p.drive_time :
+        name == "holdtime"   ? &p.hold_time :
+                               nullptr;
+
+    if (!param) {
+        printf("Invalid parameter name: %s\n", name.c_str());
+        return;
+    }
+
+    if (argc == 1) {
+        printf("%s: %4d\n", name.c_str(), *param);
+        return;
+    }
+
+    char *endptr;
+    auto new_val = strtoul(argv[1], &endptr, 0);
+
+    if (*endptr == '\0') {
+        *param = new_val;
+        solenoid::setParams(p);
+        printf("Value successfully updated.\n");
+    } else {
+        printf("Invalid integer: %s\n", argv[1]);
     }
 }
 
@@ -172,6 +248,14 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         "Set a new PIN number. If the given old pin is correct, it is discarded\n"
         "and the new PIN immediately becomes active. If the old PIN is incorrect,\n"
         "the new PIN is ignored and the console is temporarily locked.\n"
+    },
+    {
+        "param",
+        &paramCmd,
+        "\t\tShow or update various low-level configuration parameters.",
+        "Usage: param [PARAM] [VALUE]\n"
+        "Show or set the VALUE of PARAM. If no arguments are specified,\n"
+        "display the value of all valid parameters.\n"
     },
     {
        "reset",
