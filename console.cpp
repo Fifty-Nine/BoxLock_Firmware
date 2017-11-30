@@ -20,7 +20,7 @@
 
 namespace {
 
-using command_fn = void (*const)(const char*);
+using command_fn = void (*const)(char*);
 struct command_t
 {
     const char *name;
@@ -28,7 +28,7 @@ struct command_t
     const char *documentation;
     const char *details;
     
-    const char *partialMatch(const char *line) const
+    char *partialMatch(char *line) const
     {
         size_t i = 0;
         for (; line[i] != '\0'; ++i) {
@@ -49,9 +49,9 @@ struct command_t
         return line + i;
     }
     
-    const char *match(const char *line) const
+    char *match(char *line) const
     {
-        const char *partial = partialMatch(line);
+        auto partial = partialMatch(line);
         if (!partial || (*partial != '\0' && !std::isspace(*partial))) {
             return nullptr;
         }
@@ -65,7 +65,7 @@ struct command_t
 
 void printHelp(const char *cmd);
 
-void unlockCmd(const char *args)
+void unlockCmd(char *args)
 {
     if (lock::tryUnlock(args)) {
         printf("Box unlocked.\n");
@@ -74,7 +74,7 @@ void unlockCmd(const char *args)
     }
 }
 
-void setPinCmd(const char *args)
+void setPinCmd(char *args)
 {
     char oldPin[16];
     char *oldPinPtr = oldPin;
@@ -85,7 +85,7 @@ void setPinCmd(const char *args)
     }
     *oldPinPtr = '\0';
     while (*args != '\0' && std::isspace(*args)) { ++args; }
-    const char *newPin = args;
+    char *newPin = args;
     
     if (*oldPin == '\0' || *newPin == '\0') {
         printf("Missing argument.\n");
@@ -112,7 +112,7 @@ void setPinCmd(const char *args)
 extern "C" void* sbrk(intptr_t);
 extern "C" intptr_t __sram_end__;
 
-void memoryStats(const char*)
+void memoryStats(char*)
 {
     static auto info = mallinfo();
 
@@ -193,7 +193,7 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
     },
     {
         "help",
-        &printHelp,
+        (command_fn)&printHelp,
         "\t\tPrint this help screen. Additional information about a command\n"
         "\t\tmay be available with 'help [command]'.",
         nullptr
@@ -203,7 +203,7 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
 static void completion(const char *line, linenoiseCompletions *lc)
 {
     for (auto &cmd : commands) {
-        if (cmd.partialMatch(line)) {
+        if (cmd.partialMatch(const_cast<char*>(line))) {
             std::string name = cmd.name;
             name += ' ';
             linenoiseAddCompletion(lc, name.c_str());
@@ -211,7 +211,7 @@ static void completion(const char *line, linenoiseCompletions *lc)
     }
 }
 
-command_t *findCommand(const char *line, const char **args = nullptr)
+command_t *findCommand(char *line, char **args = nullptr)
 {
     for (auto &cmd : commands) {
         if (auto *rc = cmd.match(line)) {
@@ -221,6 +221,12 @@ command_t *findCommand(const char *line, const char **args = nullptr)
     }
     return nullptr;
 }
+
+command_t *findCommand(const char *line)
+{
+    return findCommand(const_cast<char*>(line), nullptr);
+}
+
 
 void printHelp(const char *args)
 {
@@ -241,7 +247,7 @@ void printHelp(const char *args)
     }
 }
 
-extern "C" bool parseCommand(const char* line_buffer)
+extern "C" bool parseCommand(char* line_buffer)
 {
     bool addToHistory = true;
     while (std::isspace(*line_buffer)) {
@@ -249,7 +255,7 @@ extern "C" bool parseCommand(const char* line_buffer)
         ++line_buffer;
     }
 
-    const char *args = nullptr;
+    char *args = nullptr;
     auto *cmd = findCommand(line_buffer, &args);
     
     if (cmd) {
