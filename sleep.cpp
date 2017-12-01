@@ -8,6 +8,7 @@
 
 namespace {
 bool sleepMode __attribute__((section(".noinit")));
+bool sleepInhibited = false;
 
 /*
  * Set up clock generators necessary for sleep mode. We just use the
@@ -100,16 +101,29 @@ void sleep::enterSleep()
     mcu::reset();
 }
 
+static StaticTimer_t timer;
+static TimerHandle_t handle = xTimerCreateStatic(
+    "Sleep timer",
+    /* Timeout (ms) */ 60000,
+    /* auto-reload */ false,
+    /* context */ nullptr,
+    (TimerCallbackFunction_t)&sleep::enterSleep,
+    &timer
+);
+
 void sleep::resetTimer()
 {
-    static StaticTimer_t timer;
-    static TimerHandle_t handle = xTimerCreateStatic(
-        "Sleep timer",
-        /* Timeout (ms) */ 60000,
-        /* auto-reload */ false,
-        /* context */ nullptr,
-        (TimerCallbackFunction_t)&enterSleep,
-        &timer
-    );
-    xTimerReset(handle, portMAX_DELAY);
+    if (!sleepInhibited) {
+        xTimerReset(handle, portMAX_DELAY);
+    }
+}
+
+void sleep::inhibit(bool inhibit)
+{
+    sleepInhibited = inhibit;
+    if (inhibit) {
+        xTimerStop(handle, portMAX_DELAY);
+    } else {
+        xTimerReset(handle, portMAX_DELAY);
+    }
 }

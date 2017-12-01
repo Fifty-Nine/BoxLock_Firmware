@@ -190,6 +190,24 @@ void paramCmd(char *args)
     }
 }
 
+void sleepCmd(char *arg)
+{
+    int argc = splitArgs(arg, &arg, 1);
+
+    if (argc > 1) {
+        printf("Too many arguments.\n");
+        return;
+    }
+
+    if (strcmp(arg, "on") == 0) {
+        sleep::inhibit(false);
+    } else if (strcmp(arg, "off") == 0) {
+        sleep::inhibit(true);
+    } else {
+        sleep::enterSleep();
+    }
+}
+
 extern "C" void* sbrk(intptr_t);
 extern "C" intptr_t __sram_end__;
 
@@ -291,9 +309,11 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
     },
     {
         "sleep",
-        (command_fn)sleep::enterSleep,
-        "\t\tPut the MCU to sleep. This will end the terminal session.",
-        nullptr
+        &sleepCmd,
+        "\t\tPut the MCU to sleep or enable or disable sleep mode."
+        "Usage: sleep [on|off]\n"
+        "With \"on\" or \"off\", enable or disable sleep mode. Otherwise,\n"
+        "immedately put the MCU to sleep. This will end the terminal session.\n"
     },
     {
         "mem-stats",

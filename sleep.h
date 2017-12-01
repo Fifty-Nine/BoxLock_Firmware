@@ -6,6 +6,7 @@ namespace sleep {
 void maybeSleep();
 void enterSleep();
 void resetTimer();
+void inhibit(bool inhibit);
 
 } /* namespace sleep */
 
