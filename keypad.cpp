@@ -138,7 +138,7 @@ void keypadScanTask(void *ctxt)
 }
 
 StaticTask_t keypadCtrlTaskCtxt;
-StackType_t keypadCtrlTaskStack[64];
+StackType_t keypadCtrlTaskStack[0x80];
 StaticTask_t keypadScanTaskCtxt;
 StackType_t keypadScanTaskStack[64];
 StaticQueue_t keypadQueueCtxt;
