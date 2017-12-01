@@ -98,6 +98,16 @@ void printHelp(const char *cmd);
 
 void unlockCmd(char *args)
 {
+    unsigned count = splitArgs(args, &args, 1);
+    if (count > 1) {
+        printf("Too many arguments.\n");
+        printHelp("unlock");
+        return;
+    } else if (count < 1) {
+        printf("Too few arguments.\n");
+        printHelp("unlock");
+        return;
+    }
     if (lock::tryUnlock(args)) {
         printf("Box unlocked.\n");
     } else {
@@ -107,33 +117,18 @@ void unlockCmd(char *args)
 
 void setPinCmd(char *args)
 {
-    char oldPin[16];
-    char *oldPinPtr = oldPin;
-    while (*args != '\0' && !std::isspace(*args)) {
-        *oldPinPtr = *args;
-        ++oldPinPtr;
-        ++args;
-    }
-    *oldPinPtr = '\0';
-    while (*args != '\0' && std::isspace(*args)) { ++args; }
-    char *newPin = args;
-    
-    if (*oldPin == '\0' || *newPin == '\0') {
-        printf("Missing argument.\n");
+    char *argv[2];
+    unsigned count = splitArgs(args, argv, 2);
+    if (count < 1) {
+        printf("Too few arguments.\n");
         printHelp("set-pin");
         return;
-    }
-    
-    while (*args != '\0' && !std::isspace(*args)) { ++args; }
-    while (*args != '\0' && std::isspace(*args)) {++args; }
-    if (*args != '\0') {
+    } else if (count > 2) {
         printf("Too many arguments.\n");
         printHelp("set-pin");
         return;
     }
-    
-    
-    if (lock::trySetPin(oldPin, newPin)) {
+    if (lock::trySetPin(argv[0], argv[1])) {
         printf("New PIN successfully set.\n");
     } else {
         printf("Invalid PIN.\n");
@@ -147,6 +142,7 @@ void paramCmd(char *args)
 
     if (argc > 2) {
         printf("Too many arguments.\n");
+        printHelp("param");
         return;
     }
 
@@ -196,13 +192,19 @@ void sleepCmd(char *arg)
 
     if (argc > 1) {
         printf("Too many arguments.\n");
+        printHelp("sleep");
         return;
     }
 
     if (strcmp(arg, "on") == 0) {
         sleep::inhibit(false);
+        printf("Sleep mode enabled.\n");
     } else if (strcmp(arg, "off") == 0) {
         sleep::inhibit(true);
+        printf("Sleep mode disabled until next reset.\n");
+    } else if (argc == 1) {
+        printf("Unrecognized sleep command: %s\n", arg);
+        printHelp("sleep");
     } else {
         sleep::enterSleep();
     }
@@ -273,6 +275,7 @@ void pwmCmd(char *arg)
         pwm::disable();
     } else {
         printf("Unrecognized PWM command: %s\n", arg);
+        printHelp("pwm");
     }
 }
 
@@ -324,18 +327,18 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         "immedately put the MCU to sleep. This will end the terminal session.\n"
     },
     {
-        "mem-stats",
-        &memoryStats,
-        "\tPrint statistics about current memory usage.",
-        "Usage: mem-stats\n"
-        "Print statistics about current memory usage.\n"
-    },
-    {
         "pwm",
         (command_fn)&pwmCmd,
         "\t\tManually enable or disable the CPU_PWM output.",
         "Usage: pwm (on|off)\n"
         "Manually enable or disable the CPU_PWM output.\n",
+    },
+    {
+        "mem-stats",
+        &memoryStats,
+        "\tPrint statistics about current memory usage.",
+        "Usage: mem-stats\n"
+        "Print statistics about current memory usage.\n"
     },
     {
         "help",
@@ -402,16 +405,16 @@ extern "C" bool parseCommand(char* line_buffer)
         addToHistory = false;
         ++line_buffer;
     }
+    
+    if (addToHistory) {
+        linenoiseHistoryAdd(line_buffer);
+    }
 
     char *args = nullptr;
     auto *cmd = findCommand(line_buffer, &args);
     
     if (cmd) {
         cmd->callback(args);
-    }
-    
-    if (addToHistory) {
-        linenoiseHistoryAdd(line_buffer);
     }
     
     return cmd != NULL;
@@ -421,8 +424,7 @@ static void printBanner()
 {
     linenoiseClearScreen();
     printf("Welcome to the LockBox v1.0 serial debug console!\n");
-    printf("Type 'help' to see the available commands.");
-    printf("\n");
+    printf("Type 'help' to see the available commands.\n");
 }
 
 void consoleTask(void*)
