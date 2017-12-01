@@ -5,6 +5,7 @@
 #include <cstdio>          // for printf, NULL, size_t
 #include <cstdint>         // for intptr_t
 #include <cstdlib>         // for free
+#include <cstring>         // for strcmp
 #include <string>          // for string
 
 #include "FreeRTOS.h"      // for StaticTask_t
@@ -14,6 +15,7 @@
 #include "lock_control.h"  // for tryUnlock, trySetPin
 #include "mcu.h"           // for reset
 #include "portmacro.h"     // for StackType_t
+#include "pwm.h"           // for pwm::enable/disable
 #include "sleep.h"         // for sleep::enterSleep
 #include "solenoid-params.h" // for solenoid::params
 #include "task.h"          // for uxTaskGetStackHighWaterMark, vTaskDelete
@@ -148,28 +150,31 @@ void paramCmd(char *args)
         return;
     }
 
-    auto p = solenoid::getParams();
+    static auto p = solenoid::getParams();
     if (argc == 0) {
-        printf("chargetime: %4d\n", p.charge_time);
-        printf("drivetime:  %4d\n", p.drive_time);
-        printf("holdtime:   %4d\n", p.hold_time);
+        printf("chargetime: %8d\n", p.charge_time);
+        printf("drivetime:  %8d\n", p.drive_time);
+        printf("holdtime:   %8d\n", p.hold_time);
+        printf("pwmperiod:  %8d\n", p.pwm_period);
+        printf("pwmduty:    %8d\n", p.pwm_duty);
         return;
     }
 
-    std::string name = argv[0];
     unsigned *param =
-        name == "chargetime" ? &p.charge_time :
-        name == "drivetime"  ? &p.drive_time :
-        name == "holdtime"   ? &p.hold_time :
-                               nullptr;
+        strcmp(argv[0], "chargetime") == 0 ? &p.charge_time :
+        strcmp(argv[0], "drivetime") == 0  ? &p.drive_time :
+        strcmp(argv[0], "holdtime") == 0   ? &p.hold_time :
+        strcmp(argv[0], "pwmperiod") == 0  ? &p.pwm_period :
+        strcmp(argv[0], "pwmduty") == 0    ? &p.pwm_duty :
+                                             nullptr;
 
     if (!param) {
-        printf("Invalid parameter name: %s\n", name.c_str());
+        printf("Invalid parameter name: %s\n", argv[0]);
         return;
     }
 
     if (argc == 1) {
-        printf("%s: %4d\n", name.c_str(), *param);
+        printf("%s: %4d\n", argv[0], *param);
         return;
     }
 
@@ -232,6 +237,27 @@ void memoryStats(char*)
     printf("\t- Timer            = %#8lx %8ld\n\n", hwm, hwm);
 }
 
+void pwmCmd(char *arg)
+{
+    int argc = splitArgs(arg, &arg, 1);
+    if (argc > 1) {
+        printf("Too many arguments.");
+        printHelp("pwm");
+        return;
+    }
+
+    if (strcmp(arg, "on") == 0) {
+        printf("PWM output enabled.\n");
+        auto params = solenoid::getParams();
+        pwm::enable(params.pwm_period, params.pwm_duty);
+    } else if (strcmp(arg, "off") == 0) {
+        printf("PWM output disabled.\n");
+        pwm::disable();
+    } else {
+        printf("Unrecognized PWM command: %s\n", arg);
+    }
+}
+
 command_t commands[] __attribute__((section(".rodata#"))) = {
     { "clear", (command_fn)&linenoiseClearScreen, "\t\tClear the screen.", nullptr },
     {
@@ -276,12 +302,19 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         nullptr
     },
     {
+        "pwm",
+        (command_fn)&pwmCmd,
+        "\t\tManually enable or disable the CPU_PWM output.\n",
+        "Usage: pwm (on|off)\n"
+        "Manually enable or disable the CPU_PWM output.\n",
+    },
+    {
         "help",
         (command_fn)&printHelp,
         "\t\tPrint this help screen. Additional information about a command\n"
         "\t\tmay be available with 'help [command]'.",
         nullptr
-    }
+    },
 };
 
 static void completion(const char *line, linenoiseCompletions *lc)

@@ -8,6 +8,8 @@ struct params
     unsigned charge_time;
     unsigned drive_time;
     unsigned hold_time;
+    unsigned pwm_period;
+    unsigned pwm_duty;
 };
 
 params getParams();

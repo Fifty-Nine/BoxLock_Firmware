@@ -113,6 +113,7 @@ OBJS:= \
 	syscalls.o \
 	rtos_support.o \
 	mcu.o \
+	pwm.o \
 	sleep.o \
 	solenoid-params.o \
 	main.o

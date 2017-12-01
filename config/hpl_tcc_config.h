@@ -55,7 +55,7 @@
 // <o> TCC0 Waveform Channel Select <0x00-0x03>
 // <id> tcc_arch_sel_ch
 #ifndef CONF_TCC0_SEL_CH
-#define CONF_TCC0_SEL_CH 0x1
+#define CONF_TCC0_SEL_CH 0x0
 #endif
 
 /* Caculate pwm ccx register value based on WAVE_PER_VAL and Waveform Duty Value */

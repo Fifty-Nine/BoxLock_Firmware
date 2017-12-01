@@ -7,6 +7,7 @@
 #include "managed_task.h"
 #include "nvmem.h"
 #include "pins.h"
+#include "pwm.h"
 #include "solenoid-params.h"
 #include "utility.h"
 
@@ -44,18 +45,18 @@ private:
         if (msg.cmd == CMD_Unlock) {
             auto params = solenoid::getParams();
             gpio_set_pin_level(LED_OUT, true);
-            gpio_set_pin_level(PWM_EN, true);
+            pwm::enable(params.pwm_period, params.pwm_duty);
             vTaskDelay(params.charge_time);
             gpio_set_pin_level(SOL_TRIG, true);
             vTaskDelay(params.drive_time);
-            gpio_set_pin_level(PWM_EN, false);
+            pwm::disable();
             vTaskDelay(params.hold_time);
             gpio_set_pin_level(SOL_TRIG, false);
             gpio_set_pin_level(LED_OUT, false);
         }
     }
 
-    StackType_t stack[0x80];
+    StackType_t stack[0x100];
     event_msg msgQueue[2];
 } controller;
 
@@ -79,10 +80,6 @@ void lock::init()
     gpio_set_pin_direction(SOL_TRIG, GPIO_DIRECTION_OUT);
     gpio_set_pin_level(SOL_TRIG, false);
     gpio_set_pin_function(SOL_TRIG, GPIO_PIN_FUNCTION_OFF);
-
-    gpio_set_pin_direction(PWM_EN, GPIO_DIRECTION_OUT);
-    gpio_set_pin_level(PWM_EN, false);
-    gpio_set_pin_function(PWM_EN, GPIO_PIN_FUNCTION_OFF);
 
     gpio_set_pin_direction(LED_OUT, GPIO_DIRECTION_OUT);
     gpio_set_pin_level(LED_OUT, false);

@@ -6,7 +6,7 @@ namespace {
 
 solenoid::params defaultParams()
 {
-    return { 200, 50, 2000 };
+    return { 400, 400, 2000, 10000, 5000 };
 }
 
 } /* namespace */
