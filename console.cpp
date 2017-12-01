@@ -277,12 +277,19 @@ void pwmCmd(char *arg)
 }
 
 command_t commands[] __attribute__((section(".rodata#"))) = {
-    { "clear", (command_fn)&linenoiseClearScreen, "\t\tClear the screen.", nullptr },
+    {
+        "clear",
+        (command_fn)&linenoiseClearScreen,
+        "\t\tClear the screen.",
+        "Usage: clear\n"
+        "Clears the screen.\n"
+    },
     {
         "unlock", 
         &unlockCmd,
         "\tTry to unlock the box with the provided PIN.",
-        nullptr
+        "Usage: unlock PIN\n"
+        "Try to unlock the box with the provided PIN.\n"
     },
     {
         "set-pin",
@@ -305,12 +312,13 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
        "reset",
        (command_fn)mcu::reset,
         "\t\tReset the MCU.",
-        nullptr
+        "Usage: reset\n"
+        "Reset the MCU.\n"
     },
     {
         "sleep",
         &sleepCmd,
-        "\t\tPut the MCU to sleep or enable or disable sleep mode."
+        "\t\tPut the MCU to sleep or enable or disable sleep mode.",
         "Usage: sleep [on|off]\n"
         "With \"on\" or \"off\", enable or disable sleep mode. Otherwise,\n"
         "immedately put the MCU to sleep. This will end the terminal session.\n"
@@ -319,12 +327,13 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         "mem-stats",
         &memoryStats,
         "\tPrint statistics about current memory usage.",
-        nullptr
+        "Usage: mem-stats\n"
+        "Print statistics about current memory usage.\n"
     },
     {
         "pwm",
         (command_fn)&pwmCmd,
-        "\t\tManually enable or disable the CPU_PWM output.\n",
+        "\t\tManually enable or disable the CPU_PWM output.",
         "Usage: pwm (on|off)\n"
         "Manually enable or disable the CPU_PWM output.\n",
     },
@@ -333,7 +342,9 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         (command_fn)&printHelp,
         "\t\tPrint this help screen. Additional information about a command\n"
         "\t\tmay be available with 'help [command]'.",
-        nullptr
+        "Usage: help [COMMAND]\n"
+        "With no arguments, print the list of available commands. Otherwise,\n"
+        "print the usage details of the given command.\n"
     },
 };
 
