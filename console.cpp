@@ -11,6 +11,7 @@
 #include "FreeRTOS.h"      // for StaticTask_t
 #include "app_tasks.h"     // for console, keypadScan, lockControl
 #include "debug.h"         // for debug::assert
+#include "keypad.h"        // for keypad::beep
 #include "linenoise.h"     // for linenoiseClearScreen, linenoise, linenoise...
 #include "lock_control.h"  // for tryUnlock, trySetPin
 #include "mcu.h"           // for reset
@@ -279,6 +280,28 @@ void pwmCmd(char *arg)
     }
 }
 
+void beepCmd(char *args)
+{
+    int argc = splitArgs(args, &args, 1);
+    if (argc > 1) {
+        printf("Too many arguments.");
+        printHelp("beep");
+        return;
+    }
+
+    char *endptr;
+    unsigned len = argc == 1 ?
+        strtoul(args, &endptr, 0) :
+        200;
+
+    if (argc ==1 && *endptr != '\0') {
+        printf("Invalid integer: %s\n", args);
+        return;
+    }
+
+    keypad::beep(len);
+}
+
 command_t commands[] __attribute__((section(".rodata#"))) = {
     {
         "clear",
@@ -332,6 +355,14 @@ command_t commands[] __attribute__((section(".rodata#"))) = {
         "\t\tManually enable or disable the CPU_PWM output.",
         "Usage: pwm (on|off)\n"
         "Manually enable or disable the CPU_PWM output.\n",
+    },
+    {
+        "beep",
+        (command_fn)&beepCmd,
+        "\t\tEmit an audible beep.",
+        "Usage: beep [LENGTH]\n"
+        "Emit an audible beep for LENGTH milliseconds. If unspecified,\n"
+        "LENGTH defaults to 200 ms.\n"
     },
     {
         "mem-stats",

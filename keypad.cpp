@@ -29,18 +29,11 @@ void keypadTimeout(TimerHandle_t handle)
     xQueueSendToBackFromISR(keypadQueue, "!", &woken);
 }
 
-void beep(int ticks)
-{
-    if (xTimerChangePeriod(beepTimer, ticks, ticks)) {
-        gpio_set_pin_level(BUZZER, true);
-    }
-}
-
 void keypadControlTask(void *ctxt)
 {
     char buffer[16] = { 0 };
     size_t idx = 0;
-    beep(100);
+    keypad::beep(100);
     while (1)
     {
         char c;
@@ -49,7 +42,7 @@ void keypadControlTask(void *ctxt)
         if (c == '!') {
             memset(buffer, 0, 16);
             idx = 0;
-            beep(700);
+            keypad::beep(700);
         } else if (c == '#') {
             if (idx != 16) {
                 buffer[idx] = '\0';
@@ -61,28 +54,28 @@ void keypadControlTask(void *ctxt)
                  * Beep angrily and ignore any keypad input for
                  * the next 5 seconds.
                  */
-                beep(100);
+                keypad::beep(100);
                 vTaskDelay(200);
-                beep(100);
+                keypad::beep(100);
                 vTaskDelay(5000);
                 xQueueReset(keypadQueue);
             } else {
-                beep(2250);
+                keypad::beep(2250);
             }
             memset(buffer, 0, 16);
             idx = 0;
         } else if (c == '*') {
-            beep(100);
+            keypad::beep(100);
             sleep::resetTimer();
         } else if (idx == 16) {
             memset(buffer, 0, 16);
             idx = 0;
-            beep(700);
+            keypad::beep(700);
             xTimerStop(timeoutTimer, portMAX_DELAY);
             sleep::resetTimer();
         } else {
             buffer[idx++] = c;
-            beep(100);
+            keypad::beep(100);
             xTimerReset(timeoutTimer, portMAX_DELAY);
             sleep::resetTimer();
         }
@@ -147,6 +140,13 @@ StaticTimer_t timeoutTimerCtxt;
 StaticTimer_t beepTimerCtxt;
 
 } /* namespace */
+
+void keypad::beep(unsigned ticks)
+{
+    if (xTimerChangePeriod(beepTimer, ticks, ticks)) {
+        gpio_set_pin_level(BUZZER, true);
+    }
+}
 
 void keypad::init()
 {

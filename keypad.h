@@ -4,6 +4,7 @@
 namespace keypad {
 
 void init();
+void beep(unsigned ticks);
 
 } /* namespace keypad */
 
