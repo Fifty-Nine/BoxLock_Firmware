@@ -108,8 +108,11 @@ bool lock::tryUnlock(const char *guess, bool lockout)
 
 void lock::setPin(const char *newPin)
 {
-    for (size_t i = 0; i < 16 && newPin[i] != '\0'; ++i) {
+    for (size_t i = 0; i < 16; ++i) {
         pin[i] = mapToPhoneKeypad(newPin[i]);
+        if (newPin[i] == 0) {
+            break;
+        }
     }
     nvmem::write(nvmem::pin_id, pin, 16);
 }
