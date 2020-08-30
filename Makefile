@@ -34,10 +34,12 @@ COMMON_FLAGS+= \
 	-Werror \
 	-mthumb \
 	-mcpu=cortex-m0plus \
+	-mtune=cortex-m0plus \
 	-ffunction-sections \
 	-fdata-sections \
 	-fshort-enums \
 	-DBOARD_REV=$(BOARD_REV) \
+	-mno-unaligned-access
 
 CFLAGS+= \
 	$(COMMON_FLAGS) \
@@ -54,6 +56,7 @@ LDFLAGS+= \
 	$(COMMON_FLAGS) \
 	-T$(LINKER_SCRIPT) \
 	-Wl,-gc-sections \
+	-specs=nosys.specs \
 
 CMSIS_OBJS:= \
 	$(DFP_INSTALL_PATH)/gcc/gcc/startup_samd21.o \
