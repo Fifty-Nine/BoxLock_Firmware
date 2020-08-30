@@ -40,7 +40,7 @@ int _isatty(int fd)
 }
 
 extern intptr_t __heap_end__;
-extern intptr_t __sram_end__;
+extern intptr_t __heap_max__;
 
 extern "C"
 void* _sbrk(intptr_t increment)
@@ -54,7 +54,7 @@ void* _sbrk(intptr_t increment)
 
     intptr_t *new_end = curr_end + increment;
 
-    if (new_end > &__sram_end__) {
+    if (new_end > &__heap_max__) {
         errno = ENOMEM;
         return (void*)-1;
     }

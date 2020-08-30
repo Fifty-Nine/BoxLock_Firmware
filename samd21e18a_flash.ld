@@ -128,16 +128,6 @@ SECTIONS
 	__nv_rom_end__ = .;
     } > eeprom
     
-    /* stack section */
-    .stack (NOLOAD):
-    {
-        . = ALIGN(8);
-        _sstack = .;
-        . = . + STACK_SIZE;
-        . = ALIGN(8);
-        _estack = .;
-    } > ram
-
     .relocate : AT (_etext)
     {
         . = ALIGN(4);
@@ -167,7 +157,18 @@ SECTIONS
         __heap_end__ = .;
     }
 
-    __sram_end__ = ORIGIN(ram) + LENGTH(ram);
+    /*
+     * Stack is placed at the end of SRAM so that overflows will cause a hard
+     * fault.
+     */
+    /* stack section */
+    .stack (ORIGIN(ram) + LENGTH(ram) - STACK_SIZE) (NOLOAD):
+    {
+        __heap_max__ = .;
+        _sstack = .;
+	    . = . + STACK_SIZE;
+        _estack = .;
+    }
 
     .mtb (NOLOAD):
     {
