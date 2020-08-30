@@ -36,3 +36,6 @@ config.mk
 cscope.out
 *.swp
 objs/
+
+# Third party out-of-tree modules
+thirdparty/
